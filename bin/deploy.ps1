@@ -5,7 +5,7 @@ $dirs_to_exclude = @("tests", "playtomic-pc", "bin", ".vscode", ".pytest_cache",
 $unix_project_directory = "/opt/playtomic-probability-calculator"
  
 $files = Get-ChildItem "$current_directory" | 
-where { $_.Name -notin $dirs_to_exclude }
+Where-Object { $_.Name -notin $dirs_to_exclude }
 
 "Compressing selected files"
 $compress = @{

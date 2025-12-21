@@ -1,0 +1,12 @@
+{
+    "title": "Calculatrice de probabilité Playtomic",
+    "description": "Site web où vous pouvez calculer vos chances de gagner un match de padel ou de tennis selon les données fournies par l'application « Playtomic ».",
+    "player": "joueur",
+    "level": "niveau",
+    "reliability": "fiabilité",
+    "error_level": "Le niveau ne peut pas être zéro ou une chaîne.",
+    "error_reliability": "La fiabilité ne peut pas être égale à zéro ou à une chaîne.",
+    "calculate": "Calculer",
+    "couple_probability": "Probabilité de couple",
+    "loading": "Chargement..."
+}

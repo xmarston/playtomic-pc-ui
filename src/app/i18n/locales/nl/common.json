@@ -1,0 +1,12 @@
+{
+    "title": "Kansberekening Playtomic",
+    "description": "Website waar je je kansen op het winnen van een paddle- of tenniswedstrijd kunt berekenen aan de hand van de gegevens van de app “Playtomic”.",
+    "player": "speler",
+    "level": "niveau",
+    "reliability": "betrouwbaarheids",
+    "error_level": "Niveau kan niet nul of string zijn.",
+    "error_reliability": "Betrouwbaarheid kan niet nul of string zijn.",
+    "calculate": "Bereken",
+    "couple_probability": "Waarschijnlijkheid koppel",
+    "loading": "Aan het laden..."
+}

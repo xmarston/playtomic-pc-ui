@@ -1,0 +1,12 @@
+{
+    "title": "Playtomic-Wahrscheinlichkeitsrechner",
+    "description": "Website, auf der Sie Ihre Gewinnchancen bei einem Paddle- oder Tennisspiel anhand der von der App „Playtomic“ bereitgestellten Daten berechnen können.",
+    "player": "Spieler",
+    "level": "Ebene",
+    "reliability": "Zuverlässigkeit",
+    "error_level": "Die Ebene darf nicht „null“ oder eine Zeichenkette sein.s",
+    "error_reliability": "Zuverlässigkeit kann nicht gleich Null oder eine Aneinanderreihung von Wörtern sein.s",
+    "calculate": "Berechnen",
+    "couple_probability": "Paarwahrscheinlichkeit",
+    "loading": "Lädt …"
+}

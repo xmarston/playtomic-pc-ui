@@ -1,0 +1,12 @@
+{
+    "title": "Playtomic Probability Calculator",
+    "description": "Website where you can calculate your chances of winning a paddle or tennis match according to the data provided by the app “Playtomic”.",
+    "player": "player",
+    "level": "level",
+    "reliability": "reliability",
+    "error_level": "Level can't be zero or string.",
+    "error_reliability": "Reliability  can't be zero or string.",
+    "calculate": "Calculate",
+    "couple_probability": "Couple Probability",
+    "loading": "Loading..."
+}

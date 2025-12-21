@@ -1,6 +1,10 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import Home from '../src/app/[lng]/page'
 
+jest.mock('next/navigation', () => ({
+  useParams: () => ({ lng: 'en' }),
+}))
+
 jest.mock('../src/app/i18n/client', () => ({
   useTranslation: () => ({
     t: (key: string) => {
@@ -35,13 +39,13 @@ describe('Home Page', () => {
   })
 
   it('should render the title', () => {
-    render(<Home lng="en" />)
+    render(<Home />)
 
     expect(screen.getByText('Playtomic Probability Calculator')).toBeInTheDocument()
   })
 
   it('should render 4 player level inputs', () => {
-    render(<Home lng="en" />)
+    render(<Home />)
 
     expect(screen.getByLabelText('Player 1 Level')).toBeInTheDocument()
     expect(screen.getByLabelText('Player 2 Level')).toBeInTheDocument()
@@ -50,19 +54,19 @@ describe('Home Page', () => {
   })
 
   it('should render 4 player reliability inputs', () => {
-    render(<Home lng="en" />)
+    render(<Home />)
 
     expect(screen.getAllByText(/Player \d Reliability/)).toHaveLength(4)
   })
 
   it('should render calculate button', () => {
-    render(<Home lng="en" />)
+    render(<Home />)
 
     expect(screen.getByRole('button', { name: /calculate/i })).toBeInTheDocument()
   })
 
   it('should update player level on input change', () => {
-    render(<Home lng="en" />)
+    render(<Home />)
 
     const input = screen.getByLabelText('Player 1 Level') as HTMLInputElement
     fireEvent.change(input, { target: { value: '5.5' } })
@@ -71,7 +75,7 @@ describe('Home Page', () => {
   })
 
   it('should cap level at 7', () => {
-    render(<Home lng="en" />)
+    render(<Home />)
 
     const input = screen.getByLabelText('Player 1 Level') as HTMLInputElement
     fireEvent.change(input, { target: { value: '8' } })
@@ -80,7 +84,7 @@ describe('Home Page', () => {
   })
 
   it('should cap reliability at 100', () => {
-    render(<Home lng="en" />)
+    render(<Home />)
 
     const inputs = screen.getAllByRole('textbox')
     const reliabilityInput = inputs[1] as HTMLInputElement
@@ -90,7 +94,7 @@ describe('Home Page', () => {
   })
 
   it('should only accept numeric values', () => {
-    render(<Home lng="en" />)
+    render(<Home />)
 
     const input = screen.getByLabelText('Player 1 Level') as HTMLInputElement
     fireEvent.change(input, { target: { value: 'abc' } })
@@ -99,7 +103,7 @@ describe('Home Page', () => {
   })
 
   it('should show validation errors when submitting with empty values', () => {
-    render(<Home lng="en" />)
+    render(<Home />)
 
     const button = screen.getByRole('button', { name: /calculate/i })
     fireEvent.click(button)
@@ -114,7 +118,7 @@ describe('Home Page', () => {
       probability_couple_2: 0.4,
     })
 
-    render(<Home lng="en" />)
+    render(<Home />)
 
     const inputs = screen.getAllByRole('textbox')
 
@@ -147,7 +151,7 @@ describe('Home Page', () => {
       probability_couple_2: 0.4,
     })
 
-    render(<Home lng="en" />)
+    render(<Home />)
 
     const inputs = screen.getAllByRole('textbox')
 

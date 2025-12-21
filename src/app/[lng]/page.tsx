@@ -1,7 +1,7 @@
 "use client";
 
-import { NextPage } from 'next';
 import Image from 'next/image';
+import { useParams } from 'next/navigation';
 import { useTranslation } from '../i18n/client'
 
 import { useState } from "react";
@@ -20,11 +20,10 @@ interface ProbabilityResponse {
 const placeHolderPlayers: Player = { level: "0", reliability: "0" };
 const initialPlayers: Player[] = [placeHolderPlayers, placeHolderPlayers, placeHolderPlayers, placeHolderPlayers];
 
-import { InferGetStaticPropsType } from 'next';
-import { getStaticProps } from 'next/dist/build/templates/pages';
-
-const Home: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({ lng }) => {
-  const { t } = useTranslation(lng, 'common', {})
+export default function Home() {
+  const params = useParams();
+  const lng = params.lng as string;
+  const { t, isReady } = useTranslation(lng, 'common', {})
 
   const [players, setPlayers] = useState<Player[]>(initialPlayers);
   const [showError, setShowError] = useState(false);
@@ -32,6 +31,8 @@ const Home: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({ lng })
   const [showProbability, setShowProbability] = useState(false);
   const [loading, setLoading] = useState(false);
   const [winningCouple, setWinningCouple] = useState(0);
+
+  if (!isReady) return null;
 
   const handlePlayerChange = (index: number, value: string, key: keyof Player) => {
     if (/^\d*\.?\d*$/.test(value)) {
@@ -150,5 +151,3 @@ const Home: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({ lng })
     </>
   );
 }
-
-export default Home;

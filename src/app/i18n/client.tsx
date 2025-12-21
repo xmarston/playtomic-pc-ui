@@ -1,8 +1,8 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import i18next, { FlatNamespace, KeyPrefix } from 'i18next'
-import { initReactI18next, useTranslation as useTranslationOrg, UseTranslationOptions, UseTranslationResponse, FallbackNs } from 'react-i18next'
+import { initReactI18next, useTranslation as useTranslationOrg, UseTranslationOptions, FallbackNs } from 'react-i18next'
 import { useCookies } from 'react-cookie'
 import resourcesToBackend from 'i18next-resources-to-backend'
 import { getOptions, languages, cookieName } from './settings'
@@ -26,15 +26,23 @@ export function useTranslation<
     lng: string,
     ns?: Ns,
     options?: UseTranslationOptions<KPrefix>,
-): UseTranslationResponse<FallbackNs<Ns>, KPrefix> {
+): { t: ReturnType<typeof useTranslationOrg<Ns, KPrefix>>['t'], i18n: typeof i18next, isReady: boolean } {
     const [cookies, setCookie] = useCookies([cookieName])
     const ret = useTranslationOrg(ns, options)
-    const { i18n } = ret
+    const { t, i18n } = ret
+    const [isReady, setIsReady] = useState(i18n.resolvedLanguage === lng)
 
-    // Set language synchronously to match server render and prevent hydration mismatch
-    if (lng && i18n.resolvedLanguage !== lng) {
-        i18n.changeLanguage(lng)
-    }
+    // Handle language change asynchronously
+    useEffect(() => {
+        if (lng && i18n.resolvedLanguage !== lng) {
+            setIsReady(false)
+            i18n.changeLanguage(lng).then(() => {
+                setIsReady(true)
+            })
+        } else {
+            setIsReady(true)
+        }
+    }, [lng, i18n])
 
     // Persist language preference in cookie
     useEffect(() => {
@@ -42,5 +50,5 @@ export function useTranslation<
         setCookie(cookieName, lng, { path: '/' })
     }, [lng, cookies.i18next, setCookie])
 
-    return ret
+    return { t, i18n, isReady }
 }

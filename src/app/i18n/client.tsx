@@ -26,10 +26,10 @@ export function useTranslation<
     lng: string,
     ns?: Ns,
     options?: UseTranslationOptions<KPrefix>,
-): UseTranslationResponse<FallbackNs<Ns>, KPrefix> & { isReady: boolean } {
+): { t: ReturnType<typeof useTranslationOrg<Ns, KPrefix>>['t'], i18n: typeof i18next, isReady: boolean } {
     const [cookies, setCookie] = useCookies([cookieName])
     const ret = useTranslationOrg(ns, options)
-    const { i18n } = ret
+    const { t, i18n } = ret
     const [isReady, setIsReady] = useState(i18n.resolvedLanguage === lng)
 
     // Handle language change asynchronously
@@ -50,5 +50,5 @@ export function useTranslation<
         setCookie(cookieName, lng, { path: '/' })
     }, [lng, cookies.i18next, setCookie])
 
-    return { ...ret, isReady }
+    return { t, i18n, isReady }
 }

@@ -3,6 +3,7 @@ import "../globals.css";
 import { dir } from 'i18next'
 import { languages, fallbackLng } from '../i18n/settings'
 import { useTranslation } from '../i18n'
+import LanguageSelector from '../components/LanguageSelector'
 
 import { Inter } from 'next/font/google'
 
@@ -33,6 +34,7 @@ export default function RootLayout({
       <body
         className={`${inter.className} antialiased`}>
         {children}
+        <LanguageSelector />
       </body>
     </html>
   );

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import i18next, { FlatNamespace, KeyPrefix } from 'i18next'
-import { initReactI18next, useTranslation as useTranslationOrg, UseTranslationOptions, UseTranslationResponse, FallbackNs } from 'react-i18next'
+import { initReactI18next, useTranslation as useTranslationOrg, UseTranslationOptions, FallbackNs } from 'react-i18next'
 import { useCookies } from 'react-cookie'
 import resourcesToBackend from 'i18next-resources-to-backend'
 import { getOptions, languages, cookieName } from './settings'

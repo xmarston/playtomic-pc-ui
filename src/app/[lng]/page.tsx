@@ -23,7 +23,7 @@ const initialPlayers: Player[] = [placeHolderPlayers, placeHolderPlayers, placeH
 export default function Home() {
   const params = useParams();
   const lng = params.lng as string;
-  const { t } = useTranslation(lng, 'common', {})
+  const { t, isReady } = useTranslation(lng, 'common', {})
 
   const [players, setPlayers] = useState<Player[]>(initialPlayers);
   const [showError, setShowError] = useState(false);
@@ -31,6 +31,8 @@ export default function Home() {
   const [showProbability, setShowProbability] = useState(false);
   const [loading, setLoading] = useState(false);
   const [winningCouple, setWinningCouple] = useState(0);
+
+  if (!isReady) return null;
 
   const handlePlayerChange = (index: number, value: string, key: keyof Player) => {
     if (/^\d*\.?\d*$/.test(value)) {

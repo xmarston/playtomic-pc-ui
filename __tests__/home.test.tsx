@@ -21,6 +21,7 @@ jest.mock('../src/app/i18n/client', () => ({
       }
       return translations[key] || key
     },
+    isReady: true,
   }),
 }))
 

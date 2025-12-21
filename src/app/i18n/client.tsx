@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import i18next, { FlatNamespace, KeyPrefix } from 'i18next'
 import { initReactI18next, useTranslation as useTranslationOrg, UseTranslationOptions, UseTranslationResponse, FallbackNs } from 'react-i18next'
 import { useCookies } from 'react-cookie'
@@ -26,15 +26,21 @@ export function useTranslation<
     lng: string,
     ns?: Ns,
     options?: UseTranslationOptions<KPrefix>,
-): UseTranslationResponse<FallbackNs<Ns>, KPrefix> {
+): UseTranslationResponse<FallbackNs<Ns>, KPrefix> & { isReady: boolean } {
     const [cookies, setCookie] = useCookies([cookieName])
     const ret = useTranslationOrg(ns, options)
     const { i18n } = ret
+    const [isReady, setIsReady] = useState(i18n.resolvedLanguage === lng)
 
     // Handle language change asynchronously
     useEffect(() => {
         if (lng && i18n.resolvedLanguage !== lng) {
-            i18n.changeLanguage(lng)
+            setIsReady(false)
+            i18n.changeLanguage(lng).then(() => {
+                setIsReady(true)
+            })
+        } else {
+            setIsReady(true)
         }
     }, [lng, i18n])
 
@@ -44,5 +50,5 @@ export function useTranslation<
         setCookie(cookieName, lng, { path: '/' })
     }, [lng, cookies.i18next, setCookie])
 
-    return ret
+    return { ...ret, isReady }
 }

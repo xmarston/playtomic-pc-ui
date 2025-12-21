@@ -8,6 +8,7 @@ A Next.js web application for Playtomic with multi-language support.
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
 - **i18n**: react-i18next with support for 7 languages
+- **Testing**: Jest + React Testing Library
 
 ## Supported Languages
 
@@ -101,6 +102,32 @@ docker-compose logs -f ppc-ui
 ```powershell
 ./bin/deploy.ps1
 ```
+
+## Testing
+
+This project uses Jest and React Testing Library for testing.
+
+### Run tests
+
+```bash
+npm test
+```
+
+### Watch mode
+
+```bash
+npm run test:watch
+```
+
+### Coverage report
+
+```bash
+npm run test:coverage
+```
+
+### CI/CD
+
+Tests run automatically on pull requests to `main` via GitHub Actions.
 
 ## Project Structure
 

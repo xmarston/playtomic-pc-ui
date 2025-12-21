@@ -1,17 +1,18 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { useParams, useRouter } from 'next/navigation'
 import { languages } from '../i18n/settings'
 
-const languageFlags: Record<string, { flag: string; name: string }> = {
-  en: { flag: '🇬🇧', name: 'English' },
-  es: { flag: '🇪🇸', name: 'Español' },
-  fr: { flag: '🇫🇷', name: 'Français' },
-  de: { flag: '🇩🇪', name: 'Deutsch' },
-  it: { flag: '🇮🇹', name: 'Italiano' },
-  nl: { flag: '🇳🇱', name: 'Nederlands' },
-  pt: { flag: '🇵🇹', name: 'Português' },
+const languageNames: Record<string, string> = {
+  en: 'English',
+  es: 'Español',
+  fr: 'Français',
+  de: 'Deutsch',
+  it: 'Italiano',
+  nl: 'Nederlands',
+  pt: 'Português',
 }
 
 export default function LanguageSelector() {
@@ -25,8 +26,6 @@ export default function LanguageSelector() {
     router.push(`/${lng}`)
   }
 
-  const currentFlag = languageFlags[currentLng]?.flag || '🌐'
-
   return (
     <div className="fixed bottom-6 right-6 z-50">
       {isOpen && (
@@ -38,20 +37,32 @@ export default function LanguageSelector() {
               className={`flex items-center gap-2 px-3 py-2 rounded-md hover:bg-gray-100 transition-colors ${
                 lng === currentLng ? 'bg-blue-50' : ''
               }`}
-              title={languageFlags[lng]?.name}
+              title={languageNames[lng]}
             >
-              <span className="text-2xl">{languageFlags[lng]?.flag}</span>
-              <span className="text-sm text-gray-700">{languageFlags[lng]?.name}</span>
+              <Image
+                src={`/images/flags/${lng}.svg`}
+                alt={languageNames[lng]}
+                width={24}
+                height={16}
+                className="rounded-sm"
+              />
+              <span className="text-sm text-gray-700">{languageNames[lng]}</span>
             </button>
           ))}
         </div>
       )}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-14 h-14 rounded-full bg-white shadow-lg flex items-center justify-center text-3xl hover:shadow-xl transition-shadow border border-gray-200"
+        className="w-14 h-14 rounded-full bg-white shadow-lg flex items-center justify-center hover:shadow-xl transition-shadow border border-gray-200"
         aria-label="Select language"
       >
-        {currentFlag}
+        <Image
+          src={`/images/flags/${currentLng || 'en'}.svg`}
+          alt={languageNames[currentLng] || 'English'}
+          width={32}
+          height={21}
+          className="rounded-sm"
+        />
       </button>
     </div>
   )

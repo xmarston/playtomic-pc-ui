@@ -127,7 +127,7 @@ npm run test:coverage
 
 ### CI/CD
 
-Linting and tests run automatically on pull requests via GitHub Actions.
+Linting, tests, and coverage run automatically on pull requests via GitHub Actions. Coverage reports are uploaded as artifacts.
 
 ## Project Structure
 

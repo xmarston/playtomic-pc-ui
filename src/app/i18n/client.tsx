@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import i18next, { FlatNamespace, KeyPrefix } from 'i18next'
 import { initReactI18next, useTranslation as useTranslationOrg, UseTranslationOptions, UseTranslationResponse, FallbackNs } from 'react-i18next'
 import { useCookies } from 'react-cookie'
@@ -30,15 +30,11 @@ export function useTranslation<
     const [cookies, setCookie] = useCookies([cookieName])
     const ret = useTranslationOrg(ns, options)
     const { i18n } = ret
-    const [isReady, setIsReady] = useState(i18n.resolvedLanguage === lng)
 
     // Handle language change asynchronously
     useEffect(() => {
         if (lng && i18n.resolvedLanguage !== lng) {
-            setIsReady(false)
-            i18n.changeLanguage(lng).then(() => {
-                setIsReady(true)
-            })
+            i18n.changeLanguage(lng)
         }
     }, [lng, i18n])
 

@@ -1,6 +1,9 @@
 {
-    "title": "Kansberekening Playtomic",
-    "description": "Website waar je je kansen op het winnen van een paddle- of tenniswedstrijd kunt berekenen aan de hand van de gegevens van de app “Playtomic”.",
+    "title": "Padel Match Odds",
+    "hero_title": "Schat je kansen om een padelwedstrijd op Playtomic te winnen met behulp van spelersstatistieken.",
+    "hero_subtitle": "Voer de spelers in en zie hoe evenwichtig de wedstrijd echt is.",
+    "description": "Website waar je je kansen op het winnen van een paddle- of tenniswedstrijd kunt berekenen aan de hand van de gegevens van de app 'Playtomic'.",
+    "couple": "Koppel",
     "player": "speler",
     "level": "niveau",
     "reliability": "betrouwbaarheids",

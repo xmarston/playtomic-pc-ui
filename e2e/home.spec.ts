@@ -6,7 +6,35 @@ test.describe('Home Page', () => {
   })
 
   test('should render the title', async ({ page }) => {
-    await expect(page.getByText('Playtomic Probability Calculator')).toBeVisible()
+    await expect(page.getByText('Padel Match Odds')).toBeVisible()
+  })
+
+  test('should display Couple 1 section with header', async ({ page }) => {
+    const couple1Section = page.locator('.bg-blue-50')
+    await expect(couple1Section).toBeVisible()
+    await expect(couple1Section.getByText('Couple 1')).toBeVisible()
+  })
+
+  test('should display Couple 2 section with header', async ({ page }) => {
+    const couple2Section = page.locator('.bg-orange-50')
+    await expect(couple2Section).toBeVisible()
+    await expect(couple2Section.getByText('Couple 2')).toBeVisible()
+  })
+
+  test('should display VS divider between couples', async ({ page }) => {
+    await expect(page.getByText('VS')).toBeVisible()
+  })
+
+  test('should have Players 1-2 in Couple 1 section', async ({ page }) => {
+    const couple1Section = page.locator('.bg-blue-50')
+    await expect(couple1Section.getByLabel('Player 1 Level')).toBeVisible()
+    await expect(couple1Section.getByLabel('Player 2 Level')).toBeVisible()
+  })
+
+  test('should have Players 3-4 in Couple 2 section', async ({ page }) => {
+    const couple2Section = page.locator('.bg-orange-50')
+    await expect(couple2Section.getByLabel('Player 3 Level')).toBeVisible()
+    await expect(couple2Section.getByLabel('Player 4 Level')).toBeVisible()
   })
 
   test('should render 4 player level inputs', async ({ page }) => {

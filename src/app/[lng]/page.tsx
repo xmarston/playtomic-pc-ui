@@ -104,42 +104,100 @@ export default function Home() {
 
   return (
     <div className="pb-24">
-      <div className="flex items-center justify-center mt-[100px]">
-        <span className='text-xl'>{t('title')}</span>
+      {/* Hero Section */}
+      <div className="text-center mt-16 sm:mt-24 px-4">
+        <h1 className="text-3xl sm:text-5xl font-bold text-white mb-4 tracking-tight">{t('title')}</h1>
+        <p className="text-base sm:text-xl text-gray-300 max-w-2xl mx-auto mb-3 leading-relaxed">
+          {t('hero_title')}
+        </p>
+        <p className="text-sm sm:text-lg text-gray-400 max-w-xl mx-auto font-light">
+          {t('hero_subtitle')}
+        </p>
       </div>
-      <div className="flex items-center justify-center mt-[50px]">
-        <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-md w-full max-w-[800px]">
-          {players.map((player, index) => (
-            <div className="flex w-full" key={index}>
-              <div className="flex-1 mb-2 mr-2">
-                <label htmlFor={"playerLevel" + (index + 1)} className="block text-lg text-gray-700 font-medium">
-                  {t('player').charAt(0).toUpperCase() + t('player').slice(1)} {index + 1} {t('level').charAt(0).toUpperCase() + t('level').slice(1)}
-                </label>
-                <input
-                  id={"playerLevel" + (index + 1)}
-                  type="text"
-                  value={player.level}
-                  className="w-full mt-1 p-2 border text-gray-700 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  onChange={(e) => handlePlayerChange(index, e.target.value, 'level')}
-                />
-                {showError && (player.level === "0") && (
-                  <div className="text-red-500">{t('error_level')}</div>)}
+      <div className="flex items-center justify-center mt-8 sm:mt-12">
+        <form onSubmit={handleSubmit} className="bg-white p-4 sm:p-8 rounded-lg shadow-md w-full max-w-[800px] mx-4 sm:mx-0">
+          {/* Couple 1 */}
+          <div className="border-2 border-blue-200 rounded-lg p-3 sm:p-4 mb-4 bg-blue-50">
+            <h3 className="text-base sm:text-lg font-semibold text-blue-700 mb-3">{t('couple')} 1</h3>
+            {players.slice(0, 2).map((player, index) => (
+              <div className="flex flex-col sm:flex-row w-full" key={index}>
+                <div className="flex-1 mb-2 sm:mr-2">
+                  <label htmlFor={"playerLevel" + (index + 1)} className="block text-sm sm:text-lg text-gray-700 font-medium">
+                    {t('player').charAt(0).toUpperCase() + t('player').slice(1)} {index + 1} {t('level').charAt(0).toUpperCase() + t('level').slice(1)}
+                  </label>
+                  <input
+                    id={"playerLevel" + (index + 1)}
+                    type="text"
+                    value={player.level}
+                    className="w-full mt-1 p-2 border text-gray-700 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    onChange={(e) => handlePlayerChange(index, e.target.value, 'level')}
+                  />
+                  {showError && (player.level === "0") && (
+                    <div className="text-red-500 text-sm">{t('error_level')}</div>)}
+                </div>
+                <div className="flex-1 mb-2">
+                  <label htmlFor={"playerReliability" + (index + 1)} className="block text-sm sm:text-lg text-gray-700 font-medium">
+                    {t('player').charAt(0).toUpperCase() + t('player').slice(1)} {index + 1} {t('reliability').charAt(0).toUpperCase() + t('reliability').slice(1)}
+                  </label>
+                  <input
+                    type="text"
+                    value={player.reliability}
+                    className="w-full mt-1 p-2 border text-gray-700 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    onChange={(e) => handlePlayerChange(index, e.target.value, 'reliability')}
+                  />
+                  {showError && (player.reliability === "0") && (
+                    <div className="text-red-500 text-sm">{t('error_reliability')}</div>)}
+                </div>
               </div>
-              <div className=" flex-1 mb-2">
-                <label htmlFor="player1" className="block text-lg text-gray-700 font-medium">
-                  {t('player').charAt(0).toUpperCase() + t('player').slice(1)} {index + 1} {t('reliability').charAt(0).toUpperCase() + t('reliability').slice(1)}
-                </label>
-                <input
-                  type="text"
-                  value={player.reliability}
-                  className="w-full mt-1 p-2 border text-gray-700 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  onChange={(e) => handlePlayerChange(index, e.target.value, 'reliability')}
-                />
-                {showError && (player.reliability === "0") && (
-                  <div className="text-red-500">{t('error_reliability')}</div>)}
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
+
+          {/* VS Divider */}
+          <div className="flex items-center justify-center my-4">
+            <div className="flex-1 h-0.5 bg-gray-300"></div>
+            <span className="mx-4 text-xl sm:text-2xl font-bold text-gray-500">VS</span>
+            <div className="flex-1 h-0.5 bg-gray-300"></div>
+          </div>
+
+          {/* Couple 2 */}
+          <div className="border-2 border-orange-200 rounded-lg p-3 sm:p-4 mb-4 bg-orange-50">
+            <h3 className="text-base sm:text-lg font-semibold text-orange-700 mb-3">{t('couple')} 2</h3>
+            {players.slice(2, 4).map((player, sliceIndex) => {
+              const index = sliceIndex + 2;
+              return (
+                <div className="flex flex-col sm:flex-row w-full" key={index}>
+                  <div className="flex-1 mb-2 sm:mr-2">
+                    <label htmlFor={"playerLevel" + (index + 1)} className="block text-sm sm:text-lg text-gray-700 font-medium">
+                      {t('player').charAt(0).toUpperCase() + t('player').slice(1)} {index + 1} {t('level').charAt(0).toUpperCase() + t('level').slice(1)}
+                    </label>
+                    <input
+                      id={"playerLevel" + (index + 1)}
+                      type="text"
+                      value={player.level}
+                      className="w-full mt-1 p-2 border text-gray-700 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      onChange={(e) => handlePlayerChange(index, e.target.value, 'level')}
+                    />
+                    {showError && (player.level === "0") && (
+                      <div className="text-red-500 text-sm">{t('error_level')}</div>)}
+                  </div>
+                  <div className="flex-1 mb-2">
+                    <label htmlFor={"playerReliability" + (index + 1)} className="block text-sm sm:text-lg text-gray-700 font-medium">
+                      {t('player').charAt(0).toUpperCase() + t('player').slice(1)} {index + 1} {t('reliability').charAt(0).toUpperCase() + t('reliability').slice(1)}
+                    </label>
+                    <input
+                      type="text"
+                      value={player.reliability}
+                      className="w-full mt-1 p-2 border text-gray-700 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      onChange={(e) => handlePlayerChange(index, e.target.value, 'reliability')}
+                    />
+                    {showError && (player.reliability === "0") && (
+                      <div className="text-red-500 text-sm">{t('error_reliability')}</div>)}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
           <button
             type="submit"
             className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"

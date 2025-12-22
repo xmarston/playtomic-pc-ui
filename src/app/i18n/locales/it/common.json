@@ -1,6 +1,9 @@
 {
-    "title": "Calcolatore di probabilità Playtomic",
-    "description": "Sito web in cui è possibile calcolare le probabilità di vincere una partita di padel o di tennis sulla base dei dati forniti dall'app “Playtomic”.",
+    "title": "Padel Match Odds",
+    "hero_title": "Stima le tue probabilità di vincere una partita di padel su Playtomic utilizzando le statistiche dei giocatori.",
+    "hero_subtitle": "Inserisci i giocatori e scopri quanto è equilibrata la partita.",
+    "description": "Sito web in cui è possibile calcolare le probabilità di vincere una partita di padel o di tennis sulla base dei dati forniti dall'app 'Playtomic'.",
+    "couple": "Coppia",
     "player": "giocatore",
     "level": "clivello",
     "reliability": "affidabilità",

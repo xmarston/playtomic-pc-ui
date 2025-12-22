@@ -20,5 +20,6 @@
     "select_image": "Sélectionner une image",
     "extract_levels": "Extraire les Niveaux",
     "image_info_title": "Exemple d'Image",
-    "image_info_description": "Téléchargez une capture d'écran de l'écran de match Playtomic montrant les 4 joueurs avec leurs niveaux visibles, comme dans l'exemple ci-dessous."
+    "image_info_description": "Téléchargez une capture d'écran de l'écran de match Playtomic montrant les 4 joueurs avec leurs niveaux visibles, comme dans l'exemple ci-dessous.",
+    "results": "Résultats"
 }

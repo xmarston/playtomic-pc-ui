@@ -20,5 +20,6 @@
     "select_image": "Selecteer afbeelding",
     "extract_levels": "Niveaus Extraheren",
     "image_info_title": "Voorbeeld Afbeelding",
-    "image_info_description": "Upload een screenshot van het Playtomic wedstrijdscherm met alle 4 spelers en hun zichtbare niveaus, zoals in het onderstaande voorbeeld."
+    "image_info_description": "Upload een screenshot van het Playtomic wedstrijdscherm met alle 4 spelers en hun zichtbare niveaus, zoals in het onderstaande voorbeeld.",
+    "results": "Resultaten"
 }

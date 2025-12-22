@@ -20,5 +20,6 @@
     "select_image": "Seleziona immagine",
     "extract_levels": "Estrai Livelli",
     "image_info_title": "Esempio di Immagine",
-    "image_info_description": "Carica uno screenshot della schermata della partita Playtomic che mostra tutti e 4 i giocatori con i loro livelli visibili, come nell'esempio qui sotto."
+    "image_info_description": "Carica uno screenshot della schermata della partita Playtomic che mostra tutti e 4 i giocatori con i loro livelli visibili, come nell'esempio qui sotto.",
+    "results": "Risultati"
 }

@@ -20,5 +20,6 @@
     "select_image": "Bild auswählen",
     "extract_levels": "Spielstärken Extrahieren",
     "image_info_title": "Bildbeispiel",
-    "image_info_description": "Laden Sie einen Screenshot des Playtomic-Spielbildschirms hoch, der alle 4 Spieler mit ihren sichtbaren Spielstärken zeigt, wie im Beispiel unten."
+    "image_info_description": "Laden Sie einen Screenshot des Playtomic-Spielbildschirms hoch, der alle 4 Spieler mit ihren sichtbaren Spielstärken zeigt, wie im Beispiel unten.",
+    "results": "Ergebnisse"
 }

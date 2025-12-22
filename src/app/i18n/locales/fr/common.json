@@ -12,5 +12,13 @@
     "calculate": "Calculer",
     "couple_probability": "Probabilité de couple",
     "loading": "Chargement...",
-    "disclaimer": "Cet outil n'est pas affilié, approuvé ou officiellement lié à Playtomic."
+    "disclaimer": "Cet outil n'est pas affilié, approuvé ou officiellement lié à Playtomic.",
+    "upload_image": "Télécharger une Image",
+    "upload_image_description": "Téléchargez une image des joueurs du match pour remplir automatiquement leurs niveaux",
+    "extracting": "Extraction des niveaux...",
+    "extract_error": "Impossible d'extraire les niveaux de l'image",
+    "select_image": "Sélectionner une image",
+    "extract_levels": "Extraire les Niveaux",
+    "image_info_title": "Exemple d'Image",
+    "image_info_description": "Téléchargez une capture d'écran de l'écran de match Playtomic montrant les 4 joueurs avec leurs niveaux visibles, comme dans l'exemple ci-dessous."
 }

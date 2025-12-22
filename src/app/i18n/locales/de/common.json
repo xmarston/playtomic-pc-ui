@@ -12,5 +12,13 @@
     "calculate": "Berechnen",
     "couple_probability": "Paarwahrscheinlichkeit",
     "loading": "Lädt …",
-    "disclaimer": "Dieses Tool ist nicht mit Playtomic verbunden, wird nicht von Playtomic unterstützt und steht in keiner offiziellen Verbindung zu Playtomic."
+    "disclaimer": "Dieses Tool ist nicht mit Playtomic verbunden, wird nicht von Playtomic unterstützt und steht in keiner offiziellen Verbindung zu Playtomic.",
+    "upload_image": "Bild Hochladen",
+    "upload_image_description": "Laden Sie ein Bild der Spieler hoch, um deren Spielstärken automatisch auszufüllen",
+    "extracting": "Spielstärken werden extrahiert...",
+    "extract_error": "Spielstärken konnten nicht aus dem Bild extrahiert werden",
+    "select_image": "Bild auswählen",
+    "extract_levels": "Spielstärken Extrahieren",
+    "image_info_title": "Bildbeispiel",
+    "image_info_description": "Laden Sie einen Screenshot des Playtomic-Spielbildschirms hoch, der alle 4 Spieler mit ihren sichtbaren Spielstärken zeigt, wie im Beispiel unten."
 }

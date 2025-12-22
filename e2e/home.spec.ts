@@ -168,4 +168,139 @@ test.describe('Home Page', () => {
     await expect(page.getByText(/Couple Probability 1: 60.00%/)).toBeVisible()
     await expect(page.getByText(/Couple Probability 2: 40.00%/)).toBeVisible()
   })
+
+  test('should render image upload section', async ({ page }) => {
+    await expect(page.getByText('Upload Image')).toBeVisible()
+    await expect(page.getByText('Upload an image of the match players to auto-fill their levels')).toBeVisible()
+    await expect(page.getByText('Select image')).toBeVisible()
+    await expect(page.getByRole('button', { name: /extract levels/i })).toBeVisible()
+  })
+
+  test('should have extract button disabled when no file selected', async ({ page }) => {
+    const extractButton = page.getByRole('button', { name: /extract levels/i })
+    await expect(extractButton).toBeDisabled()
+  })
+
+  test('should enable extract button and show filename when file is selected', async ({ page }) => {
+    const fileInput = page.locator('input[type="file"]')
+
+    // Create a fake file and upload it
+    await fileInput.setInputFiles({
+      name: 'test-image.png',
+      mimeType: 'image/png',
+      buffer: Buffer.from('fake-image-content')
+    })
+
+    // Check filename is displayed
+    await expect(page.getByText('test-image.png')).toBeVisible()
+
+    // Check button is enabled
+    const extractButton = page.getByRole('button', { name: /extract levels/i })
+    await expect(extractButton).toBeEnabled()
+  })
+
+  test('should extract levels from image and auto-fill player level fields', async ({ page }) => {
+    // Mock the extract-levels API response
+    await page.route('**/extract-levels', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          player1_level: 4.5,
+          player2_level: 3.8,
+          player3_level: 5.2,
+          player4_level: 4.1
+        }),
+      })
+    })
+
+    const fileInput = page.locator('input[type="file"]')
+
+    // Upload a fake file
+    await fileInput.setInputFiles({
+      name: 'players.png',
+      mimeType: 'image/png',
+      buffer: Buffer.from('fake-image-content')
+    })
+
+    // Wait for filename to appear (confirms file was selected)
+    await expect(page.getByText('players.png')).toBeVisible()
+
+    // Click extract button
+    const extractButton = page.getByRole('button', { name: /extract levels/i })
+    await expect(extractButton).toBeEnabled()
+    await extractButton.click()
+
+    // Verify player levels are auto-filled
+    await expect(page.getByLabel('Player 1 Level')).toHaveValue('4.5')
+    await expect(page.getByLabel('Player 2 Level')).toHaveValue('3.8')
+    await expect(page.getByLabel('Player 3 Level')).toHaveValue('5.2')
+    await expect(page.getByLabel('Player 4 Level')).toHaveValue('4.1')
+  })
+
+  test('should show error message when extract levels API fails', async ({ page }) => {
+    // Mock the extract-levels API to fail
+    await page.route('**/extract-levels', async (route) => {
+      await route.fulfill({
+        status: 500,
+        contentType: 'application/json',
+        body: JSON.stringify({ error: 'Server error' }),
+      })
+    })
+
+    const fileInput = page.locator('input[type="file"]')
+
+    // Upload a fake file
+    await fileInput.setInputFiles({
+      name: 'players.png',
+      mimeType: 'image/png',
+      buffer: Buffer.from('fake-image-content')
+    })
+
+    // Wait for filename to appear (confirms file was selected)
+    await expect(page.getByText('players.png')).toBeVisible()
+
+    // Click extract button
+    const extractButton = page.getByRole('button', { name: /extract levels/i })
+    await expect(extractButton).toBeEnabled()
+    await extractButton.click()
+
+    // Verify error message is shown
+    await expect(page.getByText('Failed to extract levels from image')).toBeVisible()
+  })
+
+  test('should show info popover with example image when clicking info icon', async ({ page }) => {
+    // Find and click the info button
+    const infoButton = page.locator('button').filter({ hasText: 'i' }).first()
+    await infoButton.click()
+
+    // Verify popover content is visible
+    await expect(page.getByText('Image Example')).toBeVisible()
+    await expect(page.getByText(/Upload a screenshot of the Playtomic match screen/)).toBeVisible()
+    await expect(page.getByAltText('Image Example')).toBeVisible()
+
+    // Click close button
+    const closeButton = page.locator('button').filter({ hasText: '×' })
+    await closeButton.click()
+
+    // Verify popover is closed
+    await expect(page.getByText(/Upload a screenshot of the Playtomic match screen/)).not.toBeVisible()
+  })
+
+  test('should close info popover when clicking outside', async ({ page }) => {
+    // Open the popover
+    const infoButton = page.locator('button').filter({ hasText: 'i' }).first()
+    await expect(infoButton).toBeVisible()
+    await infoButton.click()
+
+    // Wait for popover content to be visible
+    const popoverDescription = page.getByText(/Upload a screenshot of the Playtomic match screen/)
+    await expect(popoverDescription).toBeVisible({ timeout: 10000 })
+
+    // Click outside the popover (on the page title)
+    await page.getByText('Padel Match Odds').click({ force: true })
+
+    // Verify popover is closed
+    await expect(popoverDescription).not.toBeVisible()
+  })
 })

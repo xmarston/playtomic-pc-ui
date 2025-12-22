@@ -1,6 +1,5 @@
 import "../globals.css";
 
-import Script from 'next/script'
 import { dir } from 'i18next'
 import { languages, fallbackLng } from '../i18n/settings'
 import { useTranslation } from '../i18n'
@@ -36,9 +35,11 @@ export default function RootLayout({
   return (
     <html lang={lng} dir={dir(lng)}>
       <head>
-        <Script id="monetag-ad" strategy="afterInteractive">
-          {`(function(s){s.dataset.zone='10361285',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`}
-        </Script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(s){s.dataset.zone='10361285',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`,
+          }}
+        />
       </head>
       <body
         className={`${inter.className} antialiased`}>

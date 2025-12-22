@@ -29,7 +29,7 @@ export default function LanguageSelector() {
   return (
     <div className="fixed bottom-6 right-6 z-50">
       {isOpen && (
-        <div className="absolute bottom-16 right-0 bg-white rounded-lg shadow-lg p-2 flex flex-col gap-1">
+        <div data-testid="language-menu" className="absolute bottom-16 right-0 bg-white rounded-lg shadow-lg p-2 flex flex-col gap-1">
           {languages.map((lng) => (
             <button
               key={lng}

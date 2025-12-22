@@ -1,12 +1,29 @@
 import { defineConfig, devices } from '@playwright/test'
 
+const isCI = !!process.env.CI
+const collectCoverage = !!process.env.COVERAGE
+
 export default defineConfig({
   testDir: './e2e',
   fullyParallel: true,
-  forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
-  reporter: 'html',
+  forbidOnly: isCI,
+  retries: 2,
+  workers: isCI ? 1 : undefined,
+  reporter: collectCoverage
+    ? [
+        ['monocart-reporter', {
+          name: 'Playwright Coverage Report',
+          outputFile: './coverage/report.html',
+          coverage: {
+            entryFilter: (entry: { url: string }) => entry.url.includes('localhost:3000'),
+            sourceFilter: (sourcePath: string) => sourcePath.includes('src/'),
+            reports: ['v8', 'html', 'lcovonly'],
+            lcov: true,
+            outputDir: './coverage',
+          },
+        }],
+      ]
+    : [['html', { open: 'never' }], ['line']],
   use: {
     baseURL: 'http://localhost:3000',
     trace: 'on-first-retry',

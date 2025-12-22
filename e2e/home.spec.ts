@@ -64,13 +64,13 @@ test.describe('Home Page', () => {
 
   test('should show validation errors when submitting with empty values', async ({ page }) => {
     const button = page.getByRole('button', { name: /calculate/i })
+    await expect(button).toBeVisible()
     await button.click()
 
-    // Wait for error messages to appear
-    await page.waitForTimeout(100)
-
-    // The actual error message from translations
+    // Wait for first error message to appear
     const levelErrors = page.getByText("Level can't be zero or string.")
+    await levelErrors.first().waitFor({ state: 'visible' })
+
     const reliabilityErrors = page.getByText("Reliability  can't be zero or string.")
 
     await expect(levelErrors).toHaveCount(4)

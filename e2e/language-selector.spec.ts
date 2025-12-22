@@ -18,17 +18,18 @@ test.describe('Language Selector', () => {
 
   test('should not show language menu by default', async ({ page }) => {
     // Menu should not be visible initially
-    const menu = page.locator('.absolute.bottom-16')
+    const menu = page.getByTestId('language-menu')
     await expect(menu).not.toBeVisible()
   })
 
   test('should open language menu when button is clicked', async ({ page }) => {
     const button = page.getByRole('button', { name: /select language/i })
+    await expect(button).toBeVisible()
     await button.click()
 
     // Wait for menu to appear
-    const menu = page.locator('.absolute.bottom-16')
-    await expect(menu).toBeVisible()
+    const menu = page.getByTestId('language-menu')
+    await menu.waitFor({ state: 'visible' })
 
     // Check all languages are listed
     await expect(menu.getByText('English')).toBeVisible()
@@ -42,11 +43,12 @@ test.describe('Language Selector', () => {
 
   test('should show all 7 language options in the menu', async ({ page }) => {
     const button = page.getByRole('button', { name: /select language/i })
+    await expect(button).toBeVisible()
     await button.click()
 
     // Check that all language options are visible in the menu
-    const menu = page.locator('.absolute.bottom-16')
-    await expect(menu).toBeVisible()
+    const menu = page.getByTestId('language-menu')
+    await menu.waitFor({ state: 'visible' })
     const menuButtons = menu.locator('button')
     await expect(menuButtons).toHaveCount(7)
   })
@@ -56,7 +58,7 @@ test.describe('Language Selector', () => {
     await expect(button).toBeVisible()
     await button.click()
 
-    const menu = page.locator('.absolute.bottom-16')
+    const menu = page.getByTestId('language-menu')
     await menu.waitFor({ state: 'visible' })
 
     await menu.getByText('Español').click()
@@ -68,7 +70,7 @@ test.describe('Language Selector', () => {
     const button = page.getByRole('button', { name: /select language/i })
     await button.click()
 
-    const menu = page.locator('.absolute.bottom-16')
+    const menu = page.getByTestId('language-menu')
     await expect(menu).toBeVisible()
 
     await menu.getByText('Français').click()
@@ -76,28 +78,30 @@ test.describe('Language Selector', () => {
     // After navigation, we're on a new page
     await expect(page).toHaveURL(/\/fr/)
     // Menu should be closed on the new page
-    await expect(page.locator('.absolute.bottom-16')).not.toBeVisible()
+    await expect(page.getByTestId('language-menu')).not.toBeVisible()
   })
 
   test('should toggle menu open and closed', async ({ page }) => {
     const button = page.getByRole('button', { name: /select language/i })
-    const menu = page.locator('.absolute.bottom-16')
+    await expect(button).toBeVisible()
+    const menu = page.getByTestId('language-menu')
 
     // Open menu
     await button.click()
-    await expect(menu).toBeVisible()
+    await menu.waitFor({ state: 'visible' })
 
     // Close menu
     await button.click()
-    await expect(menu).not.toBeVisible()
+    await menu.waitFor({ state: 'hidden' })
   })
 
   test('should highlight current language in menu', async ({ page }) => {
     const button = page.getByRole('button', { name: /select language/i })
+    await expect(button).toBeVisible()
     await button.click()
 
-    const menu = page.locator('.absolute.bottom-16')
-    await expect(menu).toBeVisible()
+    const menu = page.getByTestId('language-menu')
+    await menu.waitFor({ state: 'visible' })
 
     // Find the English button within the menu
     const englishButton = menu.locator('button').filter({ hasText: 'English' })
@@ -110,7 +114,7 @@ test.describe('Language Selector', () => {
     await expect(button).toBeVisible()
     await button.click()
 
-    const menu = page.locator('.absolute.bottom-16')
+    const menu = page.getByTestId('language-menu')
     await menu.waitFor({ state: 'visible' })
 
     await menu.getByText('Deutsch').click()

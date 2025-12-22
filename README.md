@@ -8,7 +8,7 @@ A Next.js web application for Playtomic with multi-language support.
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
 - **i18n**: react-i18next with support for 7 languages
-- **Testing**: Jest + React Testing Library
+- **Testing**: Playwright (E2E)
 
 ## Supported Languages
 
@@ -100,12 +100,16 @@ docker-compose logs -f ppc-ui
 ### Production Deployment
 
 ```powershell
+# Windows
 ./bin/deploy.ps1
+
+# Unix/Linux
+./bin/deploy.sh
 ```
 
 ## Testing
 
-This project uses Jest and React Testing Library for testing.
+This project uses Playwright for end-to-end testing.
 
 ### Run tests
 
@@ -113,10 +117,22 @@ This project uses Jest and React Testing Library for testing.
 npm test
 ```
 
-### Watch mode
+### Run tests with UI
 
 ```bash
-npm run test:watch
+npm run test:ui
+```
+
+### Run tests in headed mode
+
+```bash
+npm run test:headed
+```
+
+### Debug tests
+
+```bash
+npm run test:debug
 ```
 
 ### Coverage report
@@ -125,9 +141,11 @@ npm run test:watch
 npm run test:coverage
 ```
 
+Coverage reports are generated using `monocart-reporter` and output to the `coverage/` directory.
+
 ### CI/CD
 
-Linting, tests, and coverage run automatically on pull requests via GitHub Actions. Coverage reports are uploaded as artifacts.
+Linting and tests run automatically on pull requests via GitHub Actions. Coverage reports are uploaded as artifacts.
 
 ## Project Structure
 
@@ -137,6 +155,7 @@ src/
 │   ├── [lng]/           # Language-specific routes
 │   │   ├── layout.tsx
 │   │   └── page.tsx
+│   ├── components/      # React components
 │   ├── i18n/            # Internationalization config
 │   │   ├── locales/     # Translation files
 │   │   ├── client.tsx
@@ -145,8 +164,16 @@ src/
 │   ├── services/        # API services
 │   └── globals.css
 ├── middleware.tsx       # Language detection middleware
+e2e/                     # Playwright E2E tests
+├── home.spec.ts
+├── i18n.spec.ts
+├── language-selector.spec.ts
+└── middleware.spec.ts
 public/
 └── images/
+bin/                     # Deploy scripts
+├── deploy.ps1
+└── deploy.sh
 ```
 
 ## License

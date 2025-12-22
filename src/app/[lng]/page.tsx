@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { useTranslation } from '../i18n/client'
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Script from "next/script";
 import sendRequest from "../services/api_connector"
 
@@ -32,6 +32,14 @@ export default function Home() {
   const [showProbability, setShowProbability] = useState(false);
   const [loading, setLoading] = useState(false);
   const [winningCouple, setWinningCouple] = useState(0);
+
+  useEffect(() => {
+    try {
+      ((window as unknown as { adsbygoogle: unknown[] }).adsbygoogle = (window as unknown as { adsbygoogle: unknown[] }).adsbygoogle || []).push({});
+    } catch (e) {
+      console.error('AdSense error:', e);
+    }
+  }, []);
 
   if (!isReady) return null;
 
@@ -151,10 +159,10 @@ export default function Home() {
       </div>)}
 
       {/* AdSense Ad */}
-      <div className="flex justify-center mt-8 mb-20 px-4">
+      <div className="w-full max-w-[800px] mx-auto mt-8 mb-20 px-4">
         <ins
           className="adsbygoogle"
-          style={{ display: 'block' }}
+          style={{ display: 'block', minHeight: '100px' }}
           data-ad-client="ca-pub-2299560961834088"
           data-ad-slot="7355293483"
           data-ad-format="auto"
@@ -165,14 +173,7 @@ export default function Home() {
         async
         src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2299560961834088"
         crossOrigin="anonymous"
-        strategy="afterInteractive"
-        onLoad={() => {
-          try {
-            ((window as unknown as { adsbygoogle: unknown[] }).adsbygoogle = (window as unknown as { adsbygoogle: unknown[] }).adsbygoogle || []).push({});
-          } catch (e) {
-            console.error('AdSense error:', e);
-          }
-        }}
+        strategy="lazyOnload"
       />
 
       <footer className="fixed bottom-0 left-0 right-0 py-4 text-center text-sm text-gray-500 bg-white border-t border-gray-200">

@@ -6,7 +6,7 @@ test.describe('Home Page', () => {
   })
 
   test('should render the title', async ({ page }) => {
-    await expect(page.getByText('Playtomic Probability Calculator')).toBeVisible()
+    await expect(page.getByText('Padel Match Odds')).toBeVisible()
   })
 
   test('should display Couple 1 section with header', async ({ page }) => {

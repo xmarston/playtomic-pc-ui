@@ -104,10 +104,17 @@ export default function Home() {
 
   return (
     <div className="pb-24">
-      <div className="flex items-center justify-center mt-[100px]">
-        <span className='text-xl'>{t('title')}</span>
+      {/* Hero Section */}
+      <div className="text-center mt-16 sm:mt-24 px-4">
+        <h1 className="text-2xl sm:text-4xl font-bold text-gray-800 mb-2">{t('title')}</h1>
+        <p className="text-base sm:text-xl text-gray-600 max-w-2xl mx-auto mb-2">
+          {t('hero_title')}
+        </p>
+        <p className="text-sm sm:text-lg text-gray-500 max-w-xl mx-auto">
+          {t('hero_subtitle')}
+        </p>
       </div>
-      <div className="flex items-center justify-center mt-[50px]">
+      <div className="flex items-center justify-center mt-8 sm:mt-12">
         <form onSubmit={handleSubmit} className="bg-white p-4 sm:p-8 rounded-lg shadow-md w-full max-w-[800px] mx-4 sm:mx-0">
           {/* Couple 1 */}
           <div className="border-2 border-blue-200 rounded-lg p-3 sm:p-4 mb-4 bg-blue-50">

@@ -1,5 +1,7 @@
 {
     "title": "Padel Match Odds",
+    "hero_title": "Estimez vos chances de gagner un match de padel sur Playtomic en utilisant les statistiques des joueurs.",
+    "hero_subtitle": "Entrez les joueurs et voyez à quel point le match est vraiment équilibré.",
     "description": "Site web où vous pouvez calculer vos chances de gagner un match de padel ou de tennis selon les données fournies par l'application « Playtomic ».",
     "couple": "Paire",
     "player": "joueur",

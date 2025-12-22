@@ -20,5 +20,6 @@
     "select_image": "Selecionar imagem",
     "extract_levels": "Extrair Níveis",
     "image_info_title": "Exemplo de Imagem",
-    "image_info_description": "Carregue uma captura de ecrã do ecrã de partida do Playtomic mostrando os 4 jogadores com os seus níveis visíveis, como no exemplo abaixo."
+    "image_info_description": "Carregue uma captura de ecrã do ecrã de partida do Playtomic mostrando os 4 jogadores com os seus níveis visíveis, como no exemplo abaixo.",
+    "results": "Resultados"
 }

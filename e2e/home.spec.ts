@@ -164,9 +164,10 @@ test.describe('Home Page', () => {
     const button = page.getByRole('button', { name: /calculate/i })
     await button.click()
 
-    // The actual text uses "Couple Probability" from translations
-    await expect(page.getByText(/Couple Probability 1: 60.00%/)).toBeVisible()
-    await expect(page.getByText(/Couple Probability 2: 40.00%/)).toBeVisible()
+    // Check results section appears with correct percentages
+    await expect(page.getByText('Results')).toBeVisible()
+    await expect(page.getByText('60.0%')).toBeVisible()
+    await expect(page.getByText('40.0%')).toBeVisible()
   })
 
   test('should render image upload section', async ({ page }) => {

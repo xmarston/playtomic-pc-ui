@@ -20,5 +20,6 @@
     "select_image": "Select image",
     "extract_levels": "Extract Levels",
     "image_info_title": "Image Example",
-    "image_info_description": "Upload a screenshot of the Playtomic match screen showing all 4 players with their levels visible, like in the example below."
+    "image_info_description": "Upload a screenshot of the Playtomic match screen showing all 4 players with their levels visible, like in the example below.",
+    "results": "Results"
 }

@@ -268,6 +268,59 @@ export default function Home() {
         </form>
       </div>
 
+      {/* Probability Results */}
+      {showProbability && (
+        <div className="flex items-center justify-center mt-6">
+          <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md w-full max-w-[800px] mx-4 sm:mx-0">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-700 mb-4 text-center">{t('results')}</h3>
+
+            <div className="space-y-4">
+              {/* Couple 1 Result */}
+              <div className={`p-3 sm:p-4 rounded-lg border-2 ${winningCouple === 1 ? 'border-blue-500 bg-blue-50' : 'border-gray-200 bg-gray-50'}`}>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold text-blue-700">{t('couple')} 1</span>
+                    {winningCouple === 1 && <span className="text-xl">🏆</span>}
+                    {winningCouple !== 1 && winningCouple !== -1 && <span className="text-lg">👎</span>}
+                    {winningCouple === -1 && <span className="text-lg">😑</span>}
+                  </div>
+                  <span className={`text-xl sm:text-2xl font-bold ${winningCouple === 1 ? 'text-blue-600' : 'text-gray-600'}`}>
+                    {(coupleProbability.probability_couple_1 * 100).toFixed(1)}%
+                  </span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-3">
+                  <div
+                    className={`h-3 rounded-full transition-all duration-500 ${winningCouple === 1 ? 'bg-blue-500' : 'bg-blue-300'}`}
+                    style={{ width: `${coupleProbability.probability_couple_1 * 100}%` }}
+                  ></div>
+                </div>
+              </div>
+
+              {/* Couple 2 Result */}
+              <div className={`p-3 sm:p-4 rounded-lg border-2 ${winningCouple === 2 ? 'border-orange-500 bg-orange-50' : 'border-gray-200 bg-gray-50'}`}>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold text-orange-700">{t('couple')} 2</span>
+                    {winningCouple === 2 && <span className="text-xl">🏆</span>}
+                    {winningCouple !== 2 && winningCouple !== -1 && <span className="text-lg">👎</span>}
+                    {winningCouple === -1 && <span className="text-lg">😑</span>}
+                  </div>
+                  <span className={`text-xl sm:text-2xl font-bold ${winningCouple === 2 ? 'text-orange-600' : 'text-gray-600'}`}>
+                    {(coupleProbability.probability_couple_2 * 100).toFixed(1)}%
+                  </span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-3">
+                  <div
+                    className={`h-3 rounded-full transition-all duration-500 ${winningCouple === 2 ? 'bg-orange-500' : 'bg-orange-300'}`}
+                    style={{ width: `${coupleProbability.probability_couple_2 * 100}%` }}
+                  ></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Image Upload Section */}
       <div className="flex items-center justify-center mt-6">
         <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md w-full max-w-[800px] mx-4 sm:mx-0 relative">
@@ -350,11 +403,6 @@ export default function Home() {
           )}
         </div>
       </div>
-
-      {showProbability && (<div className="flex flex-col items-center mt-[35px] text-xl">
-        <label>{t('couple_probability')} 1: {(coupleProbability.probability_couple_1 * 100).toFixed(2)}% {winningCouple === 1 && <>🏆</>}{(winningCouple !== 1 && winningCouple !== -1) && <>👎</>}{winningCouple == -1 && <>😑</>}</label>
-        <label>{t('couple_probability')} 2: {(coupleProbability.probability_couple_2 * 100).toFixed(2)}% {winningCouple === 2 && <>🏆</>}{(winningCouple !== 2 && winningCouple !== -1) && <>👎</>}{winningCouple == -1 && <>😑</>}</label>
-      </div>)}
 
       {/* AdSense Ad */}
       <div className="w-full max-w-[800px] mx-auto mt-8 mb-20 px-4">

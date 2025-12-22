@@ -103,7 +103,7 @@ export default function Home() {
   };
 
   return (
-    <>
+    <div className="pb-24">
       <div className="flex items-center justify-center mt-[100px]">
         <span className='text-xl'>{t('title')}</span>
       </div>
@@ -179,6 +179,6 @@ export default function Home() {
       <footer className="fixed bottom-0 left-0 right-0 py-4 text-center text-sm text-gray-500 bg-white border-t border-gray-200">
         {t('disclaimer')}
       </footer>
-    </>
+    </div>
   );
 }

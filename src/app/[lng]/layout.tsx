@@ -24,9 +24,6 @@ export async function generateMetadata({ params: { lng } }: {
   return {
     title: t('title'),
     description: t('description'),
-    other: {
-      'monetag': '5c1d38d5a7ee0e751fbc39eb9e97b012',
-    },
   }
 }
 
@@ -34,18 +31,6 @@ export default function RootLayout({
   children, params: { lng } }: { children: React.ReactNode, params: { lng: string } }) {
   return (
     <html lang={lng} dir={dir(lng)}>
-      <head>
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2299560961834088"
-          crossOrigin="anonymous"
-        />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(s){s.dataset.zone='10361285',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`,
-          }}
-        />
-      </head>
       <body
         className={`${inter.className} antialiased`}>
         {children}

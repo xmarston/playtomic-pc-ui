@@ -106,11 +106,11 @@ export default function Home() {
     <div className="pb-24">
       {/* Hero Section */}
       <div className="text-center mt-16 sm:mt-24 px-4">
-        <h1 className="text-2xl sm:text-4xl font-bold text-gray-800 mb-2">{t('title')}</h1>
-        <p className="text-base sm:text-xl text-gray-600 max-w-2xl mx-auto mb-2">
+        <h1 className="text-3xl sm:text-5xl font-bold text-white mb-4 tracking-tight">{t('title')}</h1>
+        <p className="text-base sm:text-xl text-gray-300 max-w-2xl mx-auto mb-3 leading-relaxed">
           {t('hero_title')}
         </p>
-        <p className="text-sm sm:text-lg text-gray-500 max-w-xl mx-auto">
+        <p className="text-sm sm:text-lg text-gray-400 max-w-xl mx-auto font-light">
           {t('hero_subtitle')}
         </p>
       </div>

@@ -4,7 +4,8 @@ import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { useTranslation } from '../i18n/client'
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import Script from "next/script";
 import sendRequest from "../services/api_connector"
 
 interface Player {
@@ -31,6 +32,14 @@ export default function Home() {
   const [showProbability, setShowProbability] = useState(false);
   const [loading, setLoading] = useState(false);
   const [winningCouple, setWinningCouple] = useState(0);
+
+  useEffect(() => {
+    try {
+      ((window as unknown as { adsbygoogle: unknown[] }).adsbygoogle = (window as unknown as { adsbygoogle: unknown[] }).adsbygoogle || []).push({});
+    } catch (e) {
+      console.error('AdSense error:', e);
+    }
+  }, []);
 
   if (!isReady) return null;
 
@@ -94,7 +103,7 @@ export default function Home() {
   };
 
   return (
-    <>
+    <div className="pb-24">
       <div className="flex items-center justify-center mt-[100px]">
         <span className='text-xl'>{t('title')}</span>
       </div>
@@ -148,9 +157,28 @@ export default function Home() {
         <label>{t('couple_probability')} 1: {(coupleProbability.probability_couple_1 * 100).toFixed(2)}% {winningCouple === 1 && <>🏆</>}{(winningCouple !== 1 && winningCouple !== -1) && <>👎</>}{winningCouple == -1 && <>😑</>}</label>
         <label>{t('couple_probability')} 2: {(coupleProbability.probability_couple_2 * 100).toFixed(2)}% {winningCouple === 2 && <>🏆</>}{(winningCouple !== 2 && winningCouple !== -1) && <>👎</>}{winningCouple == -1 && <>😑</>}</label>
       </div>)}
+
+      {/* AdSense Ad */}
+      <div className="w-full max-w-[800px] mx-auto mt-8 mb-20 px-4">
+        <ins
+          className="adsbygoogle"
+          style={{ display: 'block', minHeight: '100px' }}
+          data-ad-client="ca-pub-2299560961834088"
+          data-ad-slot="7355293483"
+          data-ad-format="auto"
+          data-full-width-responsive="true"
+        />
+      </div>
+      <Script
+        async
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2299560961834088"
+        crossOrigin="anonymous"
+        strategy="lazyOnload"
+      />
+
       <footer className="fixed bottom-0 left-0 right-0 py-4 text-center text-sm text-gray-500 bg-white border-t border-gray-200">
         {t('disclaimer')}
       </footer>
-    </>
+    </div>
   );
 }

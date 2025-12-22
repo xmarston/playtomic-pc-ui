@@ -12,5 +12,13 @@
     "calculate": "Bereken",
     "couple_probability": "Waarschijnlijkheid koppel",
     "loading": "Aan het laden...",
-    "disclaimer": "Deze tool is niet gelieerd aan, goedgekeurd door of op enige wijze officieel verbonden met Playtomic."
+    "disclaimer": "Deze tool is niet gelieerd aan, goedgekeurd door of op enige wijze officieel verbonden met Playtomic.",
+    "upload_image": "Afbeelding Uploaden",
+    "upload_image_description": "Upload een afbeelding van de wedstrijdspelers om hun niveaus automatisch in te vullen",
+    "extracting": "Niveaus extraheren...",
+    "extract_error": "Kon niveaus niet uit afbeelding extraheren",
+    "select_image": "Selecteer afbeelding",
+    "extract_levels": "Niveaus Extraheren",
+    "image_info_title": "Voorbeeld Afbeelding",
+    "image_info_description": "Upload een screenshot van het Playtomic wedstrijdscherm met alle 4 spelers en hun zichtbare niveaus, zoals in het onderstaande voorbeeld."
 }

@@ -4,9 +4,9 @@ import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { useTranslation } from '../i18n/client'
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Script from "next/script";
-import sendRequest from "../services/api_connector"
+import sendRequest, { extractLevelsFromImage } from "../services/api_connector"
 
 interface Player {
   level: string;
@@ -32,6 +32,12 @@ export default function Home() {
   const [showProbability, setShowProbability] = useState(false);
   const [loading, setLoading] = useState(false);
   const [winningCouple, setWinningCouple] = useState(0);
+  const [extractingLevels, setExtractingLevels] = useState(false);
+  const [extractError, setExtractError] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [showImageInfo, setShowImageInfo] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const imageInfoRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     try {
@@ -40,6 +46,22 @@ export default function Home() {
       console.error('AdSense error:', e);
     }
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (imageInfoRef.current && !imageInfoRef.current.contains(event.target as Node)) {
+        setShowImageInfo(false);
+      }
+    };
+
+    if (showImageInfo) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showImageInfo]);
 
   if (!isReady) return null;
 
@@ -99,6 +121,40 @@ export default function Home() {
         setShowProbability(false);
         setLoading(false);
       });
+    }
+  };
+
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setSelectedImage(file);
+      setExtractError(null);
+    }
+  };
+
+  const handleExtractLevels = async () => {
+    if (!selectedImage) return;
+
+    setExtractingLevels(true);
+    setExtractError(null);
+
+    try {
+      const response = await extractLevelsFromImage(selectedImage);
+      const newPlayers = [...players];
+      newPlayers[0] = { ...newPlayers[0], level: response.player1_level.toString() };
+      newPlayers[1] = { ...newPlayers[1], level: response.player2_level.toString() };
+      newPlayers[2] = { ...newPlayers[2], level: response.player3_level.toString() };
+      newPlayers[3] = { ...newPlayers[3], level: response.player4_level.toString() };
+      setPlayers(newPlayers);
+      setSelectedImage(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    } catch (error) {
+      console.error(error);
+      setExtractError(t('extract_error'));
+    } finally {
+      setExtractingLevels(false);
     }
   };
 
@@ -211,6 +267,90 @@ export default function Home() {
           </button>
         </form>
       </div>
+
+      {/* Image Upload Section */}
+      <div className="flex items-center justify-center mt-6">
+        <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md w-full max-w-[800px] mx-4 sm:mx-0 relative">
+          <div className="flex items-center gap-2 mb-2">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-700">{t('upload_image')}</h3>
+            <button
+              type="button"
+              onClick={() => setShowImageInfo(!showImageInfo)}
+              className="w-5 h-5 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-600 text-xs font-bold flex items-center justify-center transition-colors"
+              aria-label={t('image_info_title')}
+            >
+              i
+            </button>
+          </div>
+          <p className="text-sm text-gray-500 mb-4">{t('upload_image_description')}</p>
+
+          {/* Info Popover */}
+          {showImageInfo && (
+            <div ref={imageInfoRef} className="absolute left-0 right-0 mx-4 sm:mx-0 top-full mt-2 z-10 bg-white border border-gray-200 rounded-lg shadow-lg p-4">
+              <div className="flex justify-between items-start mb-3">
+                <h4 className="font-semibold text-gray-700">{t('image_info_title')}</h4>
+                <button
+                  type="button"
+                  onClick={() => setShowImageInfo(false)}
+                  className="text-gray-400 hover:text-gray-600 text-xl leading-none"
+                >
+                  &times;
+                </button>
+              </div>
+              <p className="text-sm text-gray-600 mb-3">{t('image_info_description')}</p>
+              <div className="rounded-md overflow-hidden border border-gray-200">
+                <Image
+                  src="/images/match_example.png"
+                  alt={t('image_info_title')}
+                  width={400}
+                  height={300}
+                  className="w-full h-auto"
+                />
+              </div>
+            </div>
+          )}
+
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+            <div className="flex-1 w-full">
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleFileSelect}
+                className="hidden"
+                id="imageUpload"
+              />
+              <label
+                htmlFor="imageUpload"
+                className="flex items-center justify-center w-full px-4 py-2 border-2 border-dashed border-gray-300 rounded-md cursor-pointer hover:border-blue-400 hover:bg-gray-50 transition-colors"
+              >
+                <span className="text-gray-600">
+                  {selectedImage ? selectedImage.name : t('select_image')}
+                </span>
+              </label>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleExtractLevels}
+              disabled={!selectedImage || extractingLevels}
+              className="w-full sm:w-auto px-6 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:bg-gray-300 disabled:cursor-not-allowed"
+            >
+              <div className="flex items-center justify-center space-x-2">
+                <span>{t('extract_levels')}</span>
+                {extractingLevels && (
+                  <Image src="/images/clock.svg" className="loading-svg" alt={t('extracting')} width={20} height={20} />
+                )}
+              </div>
+            </button>
+          </div>
+
+          {extractError && (
+            <div className="mt-3 text-red-500 text-sm">{extractError}</div>
+          )}
+        </div>
+      </div>
+
       {showProbability && (<div className="flex flex-col items-center mt-[35px] text-xl">
         <label>{t('couple_probability')} 1: {(coupleProbability.probability_couple_1 * 100).toFixed(2)}% {winningCouple === 1 && <>🏆</>}{(winningCouple !== 1 && winningCouple !== -1) && <>👎</>}{winningCouple == -1 && <>😑</>}</label>
         <label>{t('couple_probability')} 2: {(coupleProbability.probability_couple_2 * 100).toFixed(2)}% {winningCouple === 2 && <>🏆</>}{(winningCouple !== 2 && winningCouple !== -1) && <>👎</>}{winningCouple == -1 && <>😑</>}</label>

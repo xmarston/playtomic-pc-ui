@@ -12,5 +12,13 @@
     "calculate": "Calculate",
     "couple_probability": "Couple Probability",
     "loading": "Loading...",
-    "disclaimer": "This tool is not affiliated with, endorsed by, or in any way officially connected to Playtomic."
+    "disclaimer": "This tool is not affiliated with, endorsed by, or in any way officially connected to Playtomic.",
+    "upload_image": "Upload Image",
+    "upload_image_description": "Upload an image of the match players to auto-fill their levels",
+    "extracting": "Extracting levels...",
+    "extract_error": "Failed to extract levels from image",
+    "select_image": "Select image",
+    "extract_levels": "Extract Levels",
+    "image_info_title": "Image Example",
+    "image_info_description": "Upload a screenshot of the Playtomic match screen showing all 4 players with their levels visible, like in the example below."
 }

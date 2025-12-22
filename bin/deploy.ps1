@@ -19,4 +19,11 @@ ssh xmarston@raspberrypi "cd /tmp/ && rm -rf ppc.zip"
 scp $destination_path xmarston@raspberrypi:/tmp/
 ssh xmarston@raspberrypi "cd /tmp/ && unzip ppc.zip -d ppc"
 ssh xmarston@raspberrypi "cd /tmp/ && sudo rsync -a ppc/ $unix_project_directory/"
+
+"Uncommenting network configuration in docker-compose.yaml"
+ssh xmarston@raspberrypi "sudo sed -i 's/^# //' $unix_project_directory/docker-compose.yaml"
+
+"Updating API URL for production..."
+ssh xmarston@raspberrypi "sudo sed -i 's|http://localhost:8000|https://ppc-api.xmarston.dev|g' $unix_project_directory/.env"
+
 ssh xmarston@raspberrypi "cd $unix_project_directory && docker compose build && docker compose down && docker compose up -d --remove-orphans"

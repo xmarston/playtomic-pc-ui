@@ -148,6 +148,9 @@ export default function Home() {
         <label>{t('couple_probability')} 1: {(coupleProbability.probability_couple_1 * 100).toFixed(2)}% {winningCouple === 1 && <>🏆</>}{(winningCouple !== 1 && winningCouple !== -1) && <>👎</>}{winningCouple == -1 && <>😑</>}</label>
         <label>{t('couple_probability')} 2: {(coupleProbability.probability_couple_2 * 100).toFixed(2)}% {winningCouple === 2 && <>🏆</>}{(winningCouple !== 2 && winningCouple !== -1) && <>👎</>}{winningCouple == -1 && <>😑</>}</label>
       </div>)}
+      <footer className="fixed bottom-0 left-0 right-0 py-4 text-center text-sm text-gray-500 bg-white border-t border-gray-200">
+        {t('disclaimer')}
+      </footer>
     </>
   );
 }

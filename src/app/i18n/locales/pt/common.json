@@ -8,5 +8,6 @@
     "error_reliability": "A fiabilidade não pode ser zero ou uma cadeia.",
     "calculate": "Calcular",
     "couple_probability": "Probabilidade do casal",
-    "loading": "Carregando..."
+    "loading": "Carregando...",
+    "disclaimer": "Esta ferramenta não é afiliada, endossada ou oficialmente conectada ao Playtomic."
 }

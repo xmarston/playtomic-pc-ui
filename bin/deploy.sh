@@ -61,6 +61,9 @@ ssh xmarston@raspberrypi "sudo rsync -a /tmp/ppc-ui/ $UNIX_PROJECT_DIRECTORY/"
 echo "Uncommenting network configuration in docker-compose.yaml..."
 ssh xmarston@raspberrypi "sudo sed -i 's/^# //' $UNIX_PROJECT_DIRECTORY/docker-compose.yaml"
 
+echo "Updating API URL for production..."
+ssh xmarston@raspberrypi "sudo sed -i 's|http://localhost:8000|https://ppc-api.xmarston.dev|g' $UNIX_PROJECT_DIRECTORY/.env"
+
 echo "Rebuilding and restarting Docker containers..."
 ssh xmarston@raspberrypi "cd $UNIX_PROJECT_DIRECTORY && docker compose build && docker compose down && docker compose up -d --remove-orphans"
 

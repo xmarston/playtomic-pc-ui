@@ -8,5 +8,6 @@
     "error_reliability": "Betrouwbaarheid kan niet nul of string zijn.",
     "calculate": "Bereken",
     "couple_probability": "Waarschijnlijkheid koppel",
-    "loading": "Aan het laden..."
+    "loading": "Aan het laden...",
+    "disclaimer": "Deze tool is niet gelieerd aan, goedgekeurd door of op enige wijze officieel verbonden met Playtomic."
 }

@@ -8,5 +8,6 @@
     "error_reliability": "La fiabilité ne peut pas être égale à zéro ou à une chaîne.",
     "calculate": "Calculer",
     "couple_probability": "Probabilité de couple",
-    "loading": "Chargement..."
+    "loading": "Chargement...",
+    "disclaimer": "Cet outil n'est pas affilié, approuvé ou officiellement lié à Playtomic."
 }

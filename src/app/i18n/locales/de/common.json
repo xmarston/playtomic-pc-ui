@@ -8,5 +8,6 @@
     "error_reliability": "Zuverlässigkeit kann nicht gleich Null oder eine Aneinanderreihung von Wörtern sein.s",
     "calculate": "Berechnen",
     "couple_probability": "Paarwahrscheinlichkeit",
-    "loading": "Lädt …"
+    "loading": "Lädt …",
+    "disclaimer": "Dieses Tool ist nicht mit Playtomic verbunden, wird nicht von Playtomic unterstützt und steht in keiner offiziellen Verbindung zu Playtomic."
 }

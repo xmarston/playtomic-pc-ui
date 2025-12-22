@@ -8,5 +8,6 @@
     "error_reliability": "L'affidabilità non può essere pari a zero o a caratteri alfanumerici.",
     "calculate": "Calcolare",
     "couple_probability": "Probabilità della coppia",
-    "loading": "Caricamento..."
+    "loading": "Caricamento...",
+    "disclaimer": "Questo strumento non è affiliato, approvato o ufficialmente collegato a Playtomic."
 }

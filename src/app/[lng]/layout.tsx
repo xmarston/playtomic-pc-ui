@@ -36,13 +36,9 @@ export default function RootLayout({
   return (
     <html lang={lng} dir={dir(lng)}>
       <head>
-        <Script
-          src="https://quge5.com/88/tag.min.js"
-          data-zone="195226"
-          async
-          data-cfasync="false"
-          strategy="beforeInteractive"
-        />
+        <Script id="monetag-ad" strategy="afterInteractive">
+          {`(function(s){s.dataset.zone='10361285',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`}
+        </Script>
       </head>
       <body
         className={`${inter.className} antialiased`}>

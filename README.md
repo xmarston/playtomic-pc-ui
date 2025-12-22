@@ -63,7 +63,20 @@ npm start
 - Docker
 - Docker Compose
 
-### Running with Docker Compose
+### Development with Docker
+
+For local development with hot reload:
+
+```bash
+cp .env.example .env
+docker-compose -f docker-compose.dev.yaml up
+```
+
+This mounts your local files and enables hot reload, so changes are reflected immediately.
+
+### Production with Docker
+
+For production builds:
 
 1. Create your environment file:
 

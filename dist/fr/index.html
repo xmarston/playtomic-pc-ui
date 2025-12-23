@@ -1,0 +1,139 @@
+<!DOCTYPE html><html lang="fr"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" type="image/png" href="/images/pelota-de-padel.png"><link rel="apple-touch-icon" href="/images/pelota-de-padel.png"><meta name="description" content="Site web où vous pouvez calculer vos chances de gagner un match de padel ou de tennis selon les données fournies par l'application « Playtomic »."><title>Padel Match Odds</title><link rel="stylesheet" href="/_astro/index.CoSfl1m_.css">
+<link rel="stylesheet" href="/_astro/index.ChmZ18Ut.css"><script type="module" src="/_astro/hoisted.S0Ymj-sb.js"></script></head> <body>  <div class="pb-24"> <!-- Hero Section --> <div class="text-center mt-16 sm:mt-24 px-4"> <h1 class="text-3xl sm:text-5xl font-bold text-white mb-4 tracking-tight"> Padel Match Odds </h1> <p class="text-base sm:text-xl text-gray-300 max-w-2xl mx-auto mb-3 leading-relaxed"> Estimez vos chances de gagner un match de padel sur Playtomic en utilisant les statistiques des joueurs. </p> <p class="text-sm sm:text-lg text-gray-400 max-w-xl mx-auto font-light"> Entrez les joueurs et voyez à quel point le match est vraiment équilibré. </p> </div> <!-- Form Section --> <div class="flex items-center justify-center mt-8 sm:mt-12"> <div x-data="{
+    players: [
+      { level: '0', reliability: '0' },
+      { level: '0', reliability: '0' },
+      { level: '0', reliability: '0' },
+      { level: '0', reliability: '0' }
+    ],
+    showError: false,
+    loading: false,
+    showProbability: false,
+    probability: { probability_couple_1: 0, probability_couple_2: 0 },
+    winningCouple: 0,
+
+    validateInput(value, key) {
+      if (!/^\d*\.?\d*$/.test(value)) return false;
+      const num = parseFloat(value);
+      if (key === 'level' &#38;&#38; num > 7) return false;
+      if (key === 'reliability' &#38;&#38; num > 100) return false;
+      return true;
+    },
+
+    handleInput(index, value, key) {
+      if (this.validateInput(value, key)) {
+        let newValue = value;
+        if (key === 'level' &#38;&#38; parseFloat(value) >= 7) newValue = '7';
+        if (key === 'reliability' &#38;&#38; parseFloat(value) >= 100) newValue = '100';
+        this.players[index][key] = newValue;
+      }
+    },
+
+    async handleSubmit() {
+      this.showError = true;
+
+      const numericPlayers = this.players.map(p => ({
+        level: parseFloat(p.level),
+        reliability: parseFloat(p.reliability)
+      }));
+
+      const hasInvalid = numericPlayers.some(p =>
+        p.level === 0 || isNaN(p.level) || p.reliability === 0 || isNaN(p.reliability)
+      );
+
+      if (hasInvalid) return;
+
+      this.showProbability = false;
+      this.loading = true;
+
+      try {
+        const requestBody = {};
+        numericPlayers.forEach((player, index) => {
+          requestBody['player' + (index + 1) + '_level'] = player.level;
+          requestBody['player' + (index + 1) + '_reliability'] = player.reliability;
+        });
+
+        const response = await fetch('http://localhost:8000/api/v1/get-probability', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(requestBody)
+        });
+
+        if (!response.ok) throw new Error('Request failed');
+
+        const data = await response.json();
+        this.probability = data;
+
+        if (data.probability_couple_1 === data.probability_couple_2) {
+          this.winningCouple = -1;
+        } else if (data.probability_couple_1 > data.probability_couple_2) {
+          this.winningCouple = 1;
+        } else {
+          this.winningCouple = 2;
+        }
+
+        this.showProbability = true;
+      } catch (error) {
+        console.error(error);
+        this.showProbability = false;
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    setPlayerLevels(levels) {
+      this.players[0].level = levels.player1_level.toString();
+      this.players[1].level = levels.player2_level.toString();
+      this.players[2].level = levels.player3_level.toString();
+      this.players[3].level = levels.player4_level.toString();
+    }
+  }" @levels-extracted.window="setPlayerLevels($event.detail)"> <form @submit.prevent="handleSubmit" class="bg-white p-4 sm:p-8 rounded-lg shadow-md w-full max-w-[800px] mx-4 sm:mx-0"> <!-- Couple 1 --> <div class="border-2 border-blue-200 rounded-lg p-3 sm:p-4 mb-4 bg-blue-50"> <h3 class="text-base sm:text-lg font-semibold text-blue-700 mb-3">Paire 1</h3> <div class="flex flex-col sm:flex-row w-full"> <div class="flex-1 mb-2 sm:mr-2"> <label for="playerLevel1" class="block text-sm sm:text-lg text-gray-700 font-medium"> Joueur 1 Niveau </label> <input id="playerLevel1" type="text" x-model="players[0].level" x-on:input="handleInput(0, $event.target.value, 'level')" class="w-full mt-1 p-2 border text-gray-700 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"> <div x-show="showError &#38;&#38; players[0].level === '0'" class="text-red-500 text-sm"> Le niveau ne peut pas être zéro ou une chaîne. </div> </div> <div class="flex-1 mb-2"> <label for="playerReliability1" class="block text-sm sm:text-lg text-gray-700 font-medium"> Joueur 1 Fiabilité </label> <input id="playerReliability1" type="text" x-model="players[0].reliability" x-on:input="handleInput(0, $event.target.value, 'reliability')" class="w-full mt-1 p-2 border text-gray-700 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"> <div x-show="showError &#38;&#38; players[0].reliability === '0'" class="text-red-500 text-sm"> La fiabilité ne peut pas être égale à zéro ou à une chaîne. </div> </div> </div><div class="flex flex-col sm:flex-row w-full"> <div class="flex-1 mb-2 sm:mr-2"> <label for="playerLevel2" class="block text-sm sm:text-lg text-gray-700 font-medium"> Joueur 2 Niveau </label> <input id="playerLevel2" type="text" x-model="players[1].level" x-on:input="handleInput(1, $event.target.value, 'level')" class="w-full mt-1 p-2 border text-gray-700 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"> <div x-show="showError &#38;&#38; players[1].level === '0'" class="text-red-500 text-sm"> Le niveau ne peut pas être zéro ou une chaîne. </div> </div> <div class="flex-1 mb-2"> <label for="playerReliability2" class="block text-sm sm:text-lg text-gray-700 font-medium"> Joueur 2 Fiabilité </label> <input id="playerReliability2" type="text" x-model="players[1].reliability" x-on:input="handleInput(1, $event.target.value, 'reliability')" class="w-full mt-1 p-2 border text-gray-700 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"> <div x-show="showError &#38;&#38; players[1].reliability === '0'" class="text-red-500 text-sm"> La fiabilité ne peut pas être égale à zéro ou à une chaîne. </div> </div> </div> </div> <!-- VS Divider --> <div class="flex items-center justify-center my-4"> <div class="flex-1 h-0.5 bg-gray-300"></div> <span class="mx-4 text-xl sm:text-2xl font-bold text-gray-500">VS</span> <div class="flex-1 h-0.5 bg-gray-300"></div> </div> <!-- Couple 2 --> <div class="border-2 border-orange-200 rounded-lg p-3 sm:p-4 mb-4 bg-orange-50"> <h3 class="text-base sm:text-lg font-semibold text-orange-700 mb-3">Paire 2</h3> <div class="flex flex-col sm:flex-row w-full"> <div class="flex-1 mb-2 sm:mr-2"> <label for="playerLevel3" class="block text-sm sm:text-lg text-gray-700 font-medium"> Joueur 3 Niveau </label> <input id="playerLevel3" type="text" x-model="players[2].level" x-on:input="handleInput(2, $event.target.value, 'level')" class="w-full mt-1 p-2 border text-gray-700 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"> <div x-show="showError &#38;&#38; players[2].level === '0'" class="text-red-500 text-sm"> Le niveau ne peut pas être zéro ou une chaîne. </div> </div> <div class="flex-1 mb-2"> <label for="playerReliability3" class="block text-sm sm:text-lg text-gray-700 font-medium"> Joueur 3 Fiabilité </label> <input id="playerReliability3" type="text" x-model="players[2].reliability" x-on:input="handleInput(2, $event.target.value, 'reliability')" class="w-full mt-1 p-2 border text-gray-700 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"> <div x-show="showError &#38;&#38; players[2].reliability === '0'" class="text-red-500 text-sm"> La fiabilité ne peut pas être égale à zéro ou à une chaîne. </div> </div> </div><div class="flex flex-col sm:flex-row w-full"> <div class="flex-1 mb-2 sm:mr-2"> <label for="playerLevel4" class="block text-sm sm:text-lg text-gray-700 font-medium"> Joueur 4 Niveau </label> <input id="playerLevel4" type="text" x-model="players[3].level" x-on:input="handleInput(3, $event.target.value, 'level')" class="w-full mt-1 p-2 border text-gray-700 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"> <div x-show="showError &#38;&#38; players[3].level === '0'" class="text-red-500 text-sm"> Le niveau ne peut pas être zéro ou une chaîne. </div> </div> <div class="flex-1 mb-2"> <label for="playerReliability4" class="block text-sm sm:text-lg text-gray-700 font-medium"> Joueur 4 Fiabilité </label> <input id="playerReliability4" type="text" x-model="players[3].reliability" x-on:input="handleInput(3, $event.target.value, 'reliability')" class="w-full mt-1 p-2 border text-gray-700 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"> <div x-show="showError &#38;&#38; players[3].reliability === '0'" class="text-red-500 text-sm"> La fiabilité ne peut pas être égale à zéro ou à une chaîne. </div> </div> </div> </div> <button type="submit" class="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"> <div class="flex items-center justify-center space-x-2 px-4 py-2"> <span>Calculer</span> <img x-show="loading" src="/images/clock.svg" class="loading-svg" alt="Chargement..." width="24" height="24"> </div> </button> </form> <!-- Probability Results --> <div x-show="showProbability" class="flex items-center justify-center mt-6"> <div class="bg-white p-4 sm:p-6 rounded-lg shadow-md w-full max-w-[800px] mx-4 sm:mx-0"> <h3 class="text-base sm:text-lg font-semibold text-gray-700 mb-4 text-center">Résultats</h3> <div class="space-y-4"> <!-- Couple 1 Result --> <div :class="winningCouple === 1 ? 'border-blue-500 bg-blue-50' : 'border-gray-200 bg-gray-50'" class="p-3 sm:p-4 rounded-lg border-2"> <div class="flex items-center justify-between mb-2"> <div class="flex items-center gap-2"> <span class="font-semibold text-blue-700">Paire 1</span> <span x-show="winningCouple === 1" class="text-xl">🏆</span> <span x-show="winningCouple !== 1 && winningCouple !== -1" class="text-lg">👎</span> <span x-show="winningCouple === -1" class="text-lg">😑</span> </div> <span :class="winningCouple === 1 ? 'text-blue-600' : 'text-gray-600'" class="text-xl sm:text-2xl font-bold" x-text="(probability.probability_couple_1 * 100).toFixed(1) + '%'"></span> </div> <div class="w-full bg-gray-200 rounded-full h-3"> <div :class="winningCouple === 1 ? 'bg-blue-500' : 'bg-blue-300'" :style="'width: ' + (probability.probability_couple_1 * 100) + '%'" class="h-3 rounded-full transition-all duration-500"></div> </div> </div> <!-- Couple 2 Result --> <div :class="winningCouple === 2 ? 'border-orange-500 bg-orange-50' : 'border-gray-200 bg-gray-50'" class="p-3 sm:p-4 rounded-lg border-2"> <div class="flex items-center justify-between mb-2"> <div class="flex items-center gap-2"> <span class="font-semibold text-orange-700">Paire 2</span> <span x-show="winningCouple === 2" class="text-xl">🏆</span> <span x-show="winningCouple !== 2 && winningCouple !== -1" class="text-lg">👎</span> <span x-show="winningCouple === -1" class="text-lg">😑</span> </div> <span :class="winningCouple === 2 ? 'text-orange-600' : 'text-gray-600'" class="text-xl sm:text-2xl font-bold" x-text="(probability.probability_couple_2 * 100).toFixed(1) + '%'"></span> </div> <div class="w-full bg-gray-200 rounded-full h-3"> <div :class="winningCouple === 2 ? 'bg-orange-500' : 'bg-orange-300'" :style="'width: ' + (probability.probability_couple_2 * 100) + '%'" class="h-3 rounded-full transition-all duration-500"></div> </div> </div> </div> </div> </div> <!-- Image Upload Section --> <div x-data="{
+    extractingLevels: false,
+    extractError: null,
+    selectedImage: null,
+    showImageInfo: false,
+
+    handleFileSelect(event) {
+      const file = event.target.files?.[0];
+      if (file) {
+        this.selectedImage = file;
+        this.extractError = null;
+      }
+    },
+
+    async handleExtractLevels() {
+      if (!this.selectedImage) return;
+
+      this.extractingLevels = true;
+      this.extractError = null;
+
+      try {
+        const formData = new FormData();
+        formData.append('file', this.selectedImage);
+
+        const response = await fetch(import.meta.env.PUBLIC_PPC_API_URL + '/extract-levels', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!response.ok) throw new Error('Failed to extract levels');
+
+        const data = await response.json();
+
+        // Call parent component's setPlayerLevels method
+        this.$dispatch('levels-extracted', data);
+
+        this.selectedImage = null;
+        this.$refs.fileInput.value = '';
+      } catch (error) {
+        console.error(error);
+        this.extractError = true;
+      } finally {
+        this.extractingLevels = false;
+      }
+    }
+  }" @levels-extracted.window="setPlayerLevels($event.detail)" class="flex items-center justify-center mt-6"> <div class="bg-white p-4 sm:p-6 rounded-lg shadow-md w-full max-w-[800px] mx-4 sm:mx-0 relative"> <div class="flex items-center gap-2 mb-2"> <h3 class="text-base sm:text-lg font-semibold text-gray-700">Télécharger une Image</h3> <button type="button" @click="showImageInfo = !showImageInfo" class="w-5 h-5 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-600 text-xs font-bold flex items-center justify-center transition-colors" aria-label="Exemple d'Image">
+i
+</button> </div> <p class="text-sm text-gray-500 mb-4">Téléchargez une image des joueurs du match pour remplir automatiquement leurs niveaux</p> <!-- Info Popover --> <div x-show="showImageInfo" x-transition @click.outside="showImageInfo = false" class="absolute left-0 right-0 mx-4 sm:mx-0 top-full mt-2 z-10 bg-white border border-gray-200 rounded-lg shadow-lg p-4"> <div class="flex justify-between items-start mb-3"> <h4 class="font-semibold text-gray-700">Exemple d&#39;Image</h4> <button type="button" @click="showImageInfo = false" class="text-gray-400 hover:text-gray-600 text-xl leading-none">
+&times;
+</button> </div> <p class="text-sm text-gray-600 mb-3">Téléchargez une capture d&#39;écran de l&#39;écran de match Playtomic montrant les 4 joueurs avec leurs niveaux visibles, comme dans l&#39;exemple ci-dessous.</p> <div class="rounded-md overflow-hidden border border-gray-200"> <img src="/images/match_example.png" alt="Exemple d'Image" width="400" height="300" class="w-full h-auto"> </div> </div> <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3"> <div class="flex-1 w-full"> <input x-ref="fileInput" type="file" accept="image/*" @change="handleFileSelect($event)" class="hidden" id="imageUpload"> <label for="imageUpload" class="flex items-center justify-center w-full px-4 py-2 border-2 border-dashed border-gray-300 rounded-md cursor-pointer hover:border-blue-400 hover:bg-gray-50 transition-colors"> <span class="text-gray-600" x-text="selectedImage ? selectedImage.name : '{t.select_image}'"> Sélectionner une image </span> </label> </div> <button type="button" @click="handleExtractLevels()" :disabled="!selectedImage || extractingLevels" class="w-full sm:w-auto px-6 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:bg-gray-300 disabled:cursor-not-allowed"> <div class="flex items-center justify-center space-x-2"> <span>Extraire les Niveaux</span> <img x-show="extractingLevels" src="/images/clock.svg" class="loading-svg" alt="Extraction des niveaux..." width="20" height="20"> </div> </button> </div> <div x-show="extractError" class="mt-3 text-red-500 text-sm"> Impossible d&#39;extraire les niveaux de l&#39;image </div> </div> </div> <!-- AdSense Ad --> <div class="w-full max-w-[800px] mx-auto mt-8 mb-20 px-4"> <ins class="adsbygoogle" style="display: block; min-height: 100px;" data-ad-client="ca-pub-2299560961834088" data-ad-slot="7355293483" data-ad-format="auto" data-full-width-responsive="true"></ins> </div> </div>  </div> </div>  <div x-data="{ open: false }" class="fixed bottom-20 sm:bottom-6 right-6 z-50"> <!-- Language Menu --> <div x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 transform scale-100" x-transition:leave-end="opacity-0 transform scale-95" data-testid="language-menu" class="absolute bottom-16 right-0 bg-white rounded-lg shadow-lg p-2 flex flex-col gap-1" @click.outside="open = false"> <a href="/en" class="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-gray-100 transition-colors" title="English"> <img src="/images/flags/en.svg" alt="English" width="24" height="16" class="rounded-sm"> <span class="text-sm text-gray-700">English</span> </a><a href="/es" class="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-gray-100 transition-colors" title="Español"> <img src="/images/flags/es.svg" alt="Español" width="24" height="16" class="rounded-sm"> <span class="text-sm text-gray-700">Español</span> </a><a href="/fr" class="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-gray-100 transition-colors bg-blue-50" title="Français"> <img src="/images/flags/fr.svg" alt="Français" width="24" height="16" class="rounded-sm"> <span class="text-sm text-gray-700">Français</span> </a><a href="/de" class="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-gray-100 transition-colors" title="Deutsch"> <img src="/images/flags/de.svg" alt="Deutsch" width="24" height="16" class="rounded-sm"> <span class="text-sm text-gray-700">Deutsch</span> </a><a href="/it" class="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-gray-100 transition-colors" title="Italiano"> <img src="/images/flags/it.svg" alt="Italiano" width="24" height="16" class="rounded-sm"> <span class="text-sm text-gray-700">Italiano</span> </a><a href="/nl" class="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-gray-100 transition-colors" title="Nederlands"> <img src="/images/flags/nl.svg" alt="Nederlands" width="24" height="16" class="rounded-sm"> <span class="text-sm text-gray-700">Nederlands</span> </a><a href="/pt" class="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-gray-100 transition-colors" title="Português"> <img src="/images/flags/pt.svg" alt="Português" width="24" height="16" class="rounded-sm"> <span class="text-sm text-gray-700">Português</span> </a> </div> <!-- Toggle Button --> <button @click="open = !open" class="w-14 h-14 rounded-full bg-white shadow-lg flex items-center justify-center hover:shadow-xl transition-shadow border border-gray-200" aria-label="Select language" :aria-expanded="open"> <img src="/images/flags/fr.svg" alt="Français" width="32" height="21" class="rounded-sm"> </button> </div> <footer class="fixed bottom-0 left-0 right-0 py-4 text-center text-sm text-gray-500 bg-white border-t border-gray-200"> Cet outil n&#39;est pas affilié, approuvé ou officiellement lié à Playtomic. </footer> <!-- Alpine.js -->  <!-- AdSense --> <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2299560961834088" crossorigin="anonymous"></script> </body> </html>

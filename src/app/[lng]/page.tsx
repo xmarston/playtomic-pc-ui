@@ -5,7 +5,6 @@ import { useParams } from 'next/navigation';
 import { useTranslation } from '../i18n/client'
 
 import { useState, useEffect, useRef } from "react";
-import Script from "next/script";
 import sendRequest, { extractLevelsFromImage } from "../services/api_connector"
 
 interface Player {
@@ -38,14 +37,6 @@ export default function Home() {
   const [showImageInfo, setShowImageInfo] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imageInfoRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    try {
-      ((window as unknown as { adsbygoogle: unknown[] }).adsbygoogle = (window as unknown as { adsbygoogle: unknown[] }).adsbygoogle || []).push({});
-    } catch (e) {
-      console.error('AdSense error:', e);
-    }
-  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -404,23 +395,11 @@ export default function Home() {
         </div>
       </div>
 
-      {/* AdSense Ad */}
-      <div className="w-full max-w-[800px] mx-auto mt-8 mb-20 px-4">
-        <ins
-          className="adsbygoogle"
-          style={{ display: 'block', minHeight: '100px' }}
-          data-ad-client="ca-pub-2299560961834088"
-          data-ad-slot="7355293483"
-          data-ad-format="auto"
-          data-full-width-responsive="true"
-        />
+      {/* Adsterra Ad */}
+      <div className="w-full max-w-[800px] mx-auto mt-8 mb-8 px-4">
+        <script async data-cfasync="false" src="https://pl28316863.effectivegatecpm.com/75b96ef891e28987664f37a5c9f0fdad/invoke.js"></script>
+        <div id="container-75b96ef891e28987664f37a5c9f0fdad"></div>
       </div>
-      <Script
-        async
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2299560961834088"
-        crossOrigin="anonymous"
-        strategy="lazyOnload"
-      />
 
       <footer className="fixed bottom-0 left-0 right-0 py-4 text-center text-sm text-gray-500 bg-white border-t border-gray-200">
         {t('disclaimer')}

@@ -396,7 +396,7 @@ export default function Home() {
       </div>
 
       {/* Adsterra Ad */}
-      <div className="w-full max-w-[800px] mx-auto mt-8 mb-20 px-4">
+      <div className="w-full max-w-[800px] mx-auto mt-8 mb-8 px-4">
         <script async data-cfasync="false" src="https://pl28316863.effectivegatecpm.com/75b96ef891e28987664f37a5c9f0fdad/invoke.js"></script>
         <div id="container-75b96ef891e28987664f37a5c9f0fdad"></div>
       </div>

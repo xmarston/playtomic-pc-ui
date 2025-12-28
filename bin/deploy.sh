@@ -72,4 +72,10 @@ ssh xmarston@raspberrypi "sudo sed -i '/^# POSTGRES_PASSWORD=/s/^# //' $UNIX_PRO
 echo "Rebuilding and restarting Docker containers..."
 ssh xmarston@raspberrypi "cd $UNIX_PROJECT_DIRECTORY && docker compose build && docker compose down && docker compose up -d --remove-orphans"
 
+echo "Waiting for postgres to be ready..."
+ssh xmarston@raspberrypi "sleep 5"
+
+echo "Running database migrations..."
+ssh xmarston@raspberrypi "cd $UNIX_PROJECT_DIRECTORY && docker compose exec -T ppc-ui npx prisma migrate deploy"
+
 echo "Deployment complete!"

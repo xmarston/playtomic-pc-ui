@@ -10,7 +10,7 @@ const databaseUrl =
 
 export default {
   schema: path.join(__dirname, 'schema.prisma'),
-  migrate: {
-    datasourceUrl: databaseUrl,
+  datasource: {
+    url: databaseUrl,
   },
 }

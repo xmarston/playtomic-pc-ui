@@ -64,7 +64,18 @@ ssh xmarston@raspberrypi "sudo sed -i 's/^# //' $UNIX_PROJECT_DIRECTORY/docker-c
 echo "Updating API URL for production..."
 ssh xmarston@raspberrypi "sudo sed -i 's|http://localhost:8000|https://ppc-api.xmarston.dev|g' $UNIX_PROJECT_DIRECTORY/.env"
 
+echo "Switching to production POSTGRES_PASSWORD..."
+# Comment out the dev password (line without #) and uncomment the production password (line with #)
+ssh xmarston@raspberrypi "sudo sed -i '/^POSTGRES_PASSWORD=/s/^/# /' $UNIX_PROJECT_DIRECTORY/.env"
+ssh xmarston@raspberrypi "sudo sed -i '/^# POSTGRES_PASSWORD=/s/^# //' $UNIX_PROJECT_DIRECTORY/.env"
+
 echo "Rebuilding and restarting Docker containers..."
 ssh xmarston@raspberrypi "cd $UNIX_PROJECT_DIRECTORY && docker compose build && docker compose down && docker compose up -d --remove-orphans"
+
+echo "Waiting for postgres to be ready..."
+ssh xmarston@raspberrypi "sleep 5"
+
+echo "Running database migrations..."
+ssh xmarston@raspberrypi "cd $UNIX_PROJECT_DIRECTORY && docker compose exec -T ppc-ui npx prisma migrate deploy"
 
 echo "Deployment complete!"

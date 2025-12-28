@@ -9,8 +9,27 @@ services:
     env_file:
       - .env
     restart: unless-stopped
+    depends_on:
+      - postgres
 #     networks:
 #       - my_shared_network
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-analytics}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-analytics}
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+#     networks:
+#       - my_shared_network
+
+volumes:
+  postgres_data:
 
 # networks:
 #   my_shared_network:

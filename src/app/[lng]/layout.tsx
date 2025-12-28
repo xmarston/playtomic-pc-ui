@@ -4,6 +4,7 @@ import { dir } from 'i18next'
 import { languages, fallbackLng } from '../i18n/settings'
 import { useTranslation } from '../i18n'
 import LanguageSelector from '../components/LanguageSelector'
+import Analytics from '../components/Analytics'
 
 import { Inter } from 'next/font/google'
 
@@ -35,6 +36,7 @@ export default function RootLayout({
         className={`${inter.className} antialiased`}>
         {children}
         <LanguageSelector />
+        <Analytics />
       </body>
     </html>
   );

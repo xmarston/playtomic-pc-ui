@@ -14,3 +14,19 @@ services:
     environment:
       - NODE_ENV=development
       - WATCHPACK_POLLING=true
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: analytics
+      POSTGRES_PASSWORD: analytics_dev
+      POSTGRES_DB: analytics
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

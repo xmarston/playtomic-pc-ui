@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams, useRouter, usePathname } from 'next/navigation'
 import { languages } from '../i18n/settings'
 
 const languageNames: Record<string, string> = {
@@ -19,11 +19,14 @@ export default function LanguageSelector() {
   const [isOpen, setIsOpen] = useState(false)
   const params = useParams()
   const router = useRouter()
+  const pathname = usePathname()
   const currentLng = params.lng as string
 
   const handleLanguageChange = (lng: string) => {
     setIsOpen(false)
-    router.push(`/${lng}`)
+    // Replace current language in path with new language
+    const newPath = pathname.replace(`/${currentLng}`, `/${lng}`)
+    router.push(newPath)
   }
 
   return (

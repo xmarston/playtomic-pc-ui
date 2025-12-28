@@ -1,0 +1,28 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model PageView {
+  id         String   @id @default(uuid())
+  timestamp  DateTime @default(now())
+  path       String
+  referrer   String?
+  userAgent  String?
+  browser    String?
+  sessionId  String
+  screenSize String?
+  language   String?
+
+  @@index([timestamp])
+  @@index([path])
+  @@index([sessionId])
+  @@index([browser])
+}

@@ -25,6 +25,8 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
+#     networks:
+#       - my_shared_network
 
 volumes:
   postgres_data:

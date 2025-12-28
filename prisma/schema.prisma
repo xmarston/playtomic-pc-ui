@@ -7,6 +7,8 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  // TODO: Remove url when upgrading to Prisma 7 (requires Node 20+)
+  // URL will be configured solely in prisma.config.ts
   url      = env("DATABASE_URL")
 }
 

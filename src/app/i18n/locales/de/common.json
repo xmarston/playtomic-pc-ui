@@ -49,5 +49,11 @@
     "analytics_from": "Von",
     "analytics_to": "Bis",
     "analytics_apply": "Anwenden",
-    "analytics_user_agents": "Benutzeragenten"
+    "analytics_user_agents": "Benutzeragenten",
+    "analytics_cleanup": "Bereinigung",
+    "analytics_cleanup_button": "Alte Einträge Löschen",
+    "analytics_cleanup_confirm": "Alle Einträge älter als 3 Monate löschen?",
+    "analytics_cleanup_success": "{{count}} Einträge gelöscht",
+    "analytics_cleanup_running": "Bereinigung läuft...",
+    "analytics_cleanup_error": "Bereinigung fehlgeschlagen"
 }

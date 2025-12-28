@@ -72,6 +72,8 @@ export default function AnalyticsDashboard() {
     pass: string
   } | null>(null)
   const [checkingAuth, setCheckingAuth] = useState(true)
+  const [cleanupLoading, setCleanupLoading] = useState(false)
+  const [cleanupResult, setCleanupResult] = useState<{ success: boolean; count: number } | null>(null)
 
   // Date range state
   const [datePreset, setDatePreset] = useState<DatePreset>('30days')
@@ -158,6 +160,35 @@ export default function AnalyticsDashboard() {
     fetchData()
   }
 
+  const handleCleanup = async () => {
+    if (!credentials) return
+    if (!confirm(t('analytics_cleanup_confirm'))) return
+
+    setCleanupLoading(true)
+    setCleanupResult(null)
+
+    try {
+      const response = await fetch('/api/analytics/cleanup', {
+        method: 'POST',
+        headers: {
+          Authorization: `Basic ${btoa(`${credentials.user}:${credentials.pass}`)}`,
+        },
+      })
+
+      if (!response.ok) {
+        throw new Error('Cleanup failed')
+      }
+
+      const data = await response.json()
+      setCleanupResult({ success: true, count: data.details.deletedCount })
+      fetchData() // Refresh stats after cleanup
+    } catch {
+      setCleanupResult({ success: false, count: 0 })
+    } finally {
+      setCleanupLoading(false)
+    }
+  }
+
   if (!isReady || checkingAuth) return null
 
   if (!credentials) {
@@ -188,8 +219,23 @@ export default function AnalyticsDashboard() {
             {t('analytics_title')}
           </h1>
 
-          {/* Date Range Selector */}
-          <div className="flex flex-col sm:flex-row gap-2">
+          {/* Date Range Selector and Cleanup */}
+          <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
+            {/* Cleanup Button */}
+            <button
+              onClick={handleCleanup}
+              disabled={cleanupLoading}
+              className="px-3 py-1.5 text-sm rounded-md bg-red-500 text-white hover:bg-red-600 disabled:bg-red-300 transition-colors"
+            >
+              {cleanupLoading ? t('analytics_cleanup_running') : t('analytics_cleanup_button')}
+            </button>
+            {cleanupResult && (
+              <span className={`text-sm ${cleanupResult.success ? 'text-green-600' : 'text-red-600'}`}>
+                {cleanupResult.success
+                  ? t('analytics_cleanup_success', { count: cleanupResult.count })
+                  : t('analytics_cleanup_error')}
+              </span>
+            )}
             <div className="flex gap-1 bg-white rounded-lg shadow-sm p-1">
               <button
                 onClick={() => handlePresetChange('7days')}

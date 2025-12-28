@@ -78,4 +78,10 @@ ssh xmarston@raspberrypi "sleep 5"
 echo "Running database migrations..."
 ssh xmarston@raspberrypi "cd $UNIX_PROJECT_DIRECTORY && docker compose exec -T ppc-ui npx prisma migrate deploy"
 
+echo "Waiting for app to be ready..."
+ssh xmarston@raspberrypi "sleep 10"
+
+echo "Cleaning up old analytics records (>3 months)..."
+ssh xmarston@raspberrypi "cd $UNIX_PROJECT_DIRECTORY && curl -s -X POST -u \"\$(grep ANALYTICS_USER .env | cut -d '=' -f2):\$(grep ANALYTICS_PASSWORD .env | cut -d '=' -f2)\" http://localhost:3000/api/analytics/cleanup" || echo "Cleanup skipped (service may still be starting)"
+
 echo "Deployment complete!"

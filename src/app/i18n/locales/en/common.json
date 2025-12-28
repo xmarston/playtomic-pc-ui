@@ -49,5 +49,11 @@
     "analytics_from": "From",
     "analytics_to": "To",
     "analytics_apply": "Apply",
-    "analytics_user_agents": "User Agents"
+    "analytics_user_agents": "User Agents",
+    "analytics_cleanup": "Cleanup",
+    "analytics_cleanup_button": "Delete Old Records",
+    "analytics_cleanup_confirm": "Delete all records older than 3 months?",
+    "analytics_cleanup_success": "Deleted {{count}} records",
+    "analytics_cleanup_running": "Cleaning up...",
+    "analytics_cleanup_error": "Cleanup failed"
 }

@@ -49,5 +49,11 @@
     "analytics_from": "Du",
     "analytics_to": "Au",
     "analytics_apply": "Appliquer",
-    "analytics_user_agents": "Agents Utilisateurs"
+    "analytics_user_agents": "Agents Utilisateurs",
+    "analytics_cleanup": "Nettoyage",
+    "analytics_cleanup_button": "Supprimer les Anciens Enregistrements",
+    "analytics_cleanup_confirm": "Supprimer tous les enregistrements de plus de 3 mois ?",
+    "analytics_cleanup_success": "{{count}} enregistrements supprimés",
+    "analytics_cleanup_running": "Nettoyage en cours...",
+    "analytics_cleanup_error": "Échec du nettoyage"
 }

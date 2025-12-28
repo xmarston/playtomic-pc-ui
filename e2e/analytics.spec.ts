@@ -37,7 +37,20 @@ const mockViews = {
   ],
 }
 
-async function setupApiMocks(page: Page, authValid = true) {
+const mockCleanupSuccess = {
+  success: true,
+  message: 'Deleted 150 records older than 3 months',
+  details: {
+    cutoffDate: '2024-09-28T00:00:00.000Z',
+    deletedCount: 150,
+    recordsBefore: 1250,
+    recordsAfter: 1100,
+  },
+}
+
+async function setupApiMocks(page: Page, options: { cleanupSuccess?: boolean } = {}) {
+  const { cleanupSuccess = true } = options
+
   await page.route('**/api/analytics/stats*', async (route) => {
     const authHeader = route.request().headers()['authorization']
     if (!authHeader || authHeader !== 'Basic YWRtaW46cGFzc3dvcmQ=') {
@@ -70,6 +83,32 @@ async function setupApiMocks(page: Page, authValid = true) {
       contentType: 'application/json',
       body: JSON.stringify(mockViews),
     })
+  })
+
+  await page.route('**/api/analytics/cleanup*', async (route) => {
+    const authHeader = route.request().headers()['authorization']
+    if (!authHeader || authHeader !== 'Basic YWRtaW46cGFzc3dvcmQ=') {
+      await route.fulfill({
+        status: 401,
+        contentType: 'application/json',
+        body: JSON.stringify({ error: 'Unauthorized' }),
+      })
+      return
+    }
+
+    if (cleanupSuccess) {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(mockCleanupSuccess),
+      })
+    } else {
+      await route.fulfill({
+        status: 500,
+        contentType: 'application/json',
+        body: JSON.stringify({ error: 'Failed to cleanup analytics data' }),
+      })
+    }
   })
 }
 
@@ -431,5 +470,127 @@ test.describe('Analytics Dashboard - Error Handling', () => {
     // Should show "No data" in multiple sections
     const noDataTexts = page.getByText(/no data yet/i)
     await expect(noDataTexts.first()).toBeVisible()
+  })
+})
+
+test.describe('Analytics Dashboard - Cleanup', () => {
+  test.beforeEach(async ({ page }) => {
+    await setupApiMocks(page)
+    await page.goto('/en/analytics')
+    await login(page)
+    await expect(page.getByText(/analytics dashboard/i)).toBeVisible({ timeout: 10000 })
+  })
+
+  test('should display cleanup button', async ({ page }) => {
+    await expect(page.getByRole('button', { name: /delete old records/i })).toBeVisible()
+  })
+
+  test('should show confirmation dialog when cleanup button is clicked', async ({ page }) => {
+    // Set up dialog handler before clicking
+    let dialogMessage = ''
+    page.on('dialog', async (dialog) => {
+      dialogMessage = dialog.message()
+      await dialog.dismiss()
+    })
+
+    await page.getByRole('button', { name: /delete old records/i }).click()
+
+    // Wait a bit for dialog to be handled
+    await page.waitForTimeout(100)
+    expect(dialogMessage).toContain('3 months')
+  })
+
+  test('should show success message after cleanup', async ({ page }) => {
+    // Accept the confirmation dialog
+    page.on('dialog', async (dialog) => {
+      await dialog.accept()
+    })
+
+    await page.getByRole('button', { name: /delete old records/i }).click()
+
+    // Should show success message with count
+    await expect(page.getByText(/deleted 150 records/i)).toBeVisible({ timeout: 5000 })
+  })
+
+  test('should show error message when cleanup fails', async ({ page }) => {
+    // Set up mocks with cleanup failure
+    await setupApiMocks(page, { cleanupSuccess: false })
+
+    // Accept the confirmation dialog
+    page.on('dialog', async (dialog) => {
+      await dialog.accept()
+    })
+
+    await page.getByRole('button', { name: /delete old records/i }).click()
+
+    // Should show error message
+    await expect(page.getByText(/cleanup failed/i)).toBeVisible({ timeout: 5000 })
+  })
+
+  test('should not cleanup when confirmation is cancelled', async ({ page }) => {
+    // Dismiss the confirmation dialog
+    page.on('dialog', async (dialog) => {
+      await dialog.dismiss()
+    })
+
+    await page.getByRole('button', { name: /delete old records/i }).click()
+
+    // Wait a moment to ensure no success/error message appears
+    await page.waitForTimeout(500)
+
+    // Should NOT show success or error message
+    await expect(page.getByText(/deleted.*records/i)).not.toBeVisible()
+    await expect(page.getByText(/cleanup failed/i)).not.toBeVisible()
+  })
+
+  test('should disable button during cleanup', async ({ page }) => {
+    // Create a delayed response
+    await page.route('**/api/analytics/cleanup*', async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(mockCleanupSuccess),
+      })
+    })
+
+    page.on('dialog', async (dialog) => {
+      await dialog.accept()
+    })
+
+    await page.getByRole('button', { name: /delete old records/i }).click()
+
+    // Button should show loading state
+    await expect(page.getByRole('button', { name: /cleaning up/i })).toBeVisible()
+    await expect(page.getByRole('button', { name: /cleaning up/i })).toBeDisabled()
+  })
+})
+
+test.describe('Analytics Dashboard - Cleanup Translations', () => {
+  test('should display cleanup button in Spanish', async ({ page }) => {
+    await setupApiMocks(page)
+    await page.goto('/es/analytics')
+    await login(page)
+    await expect(page.getByText(/panel de analíticas/i)).toBeVisible({ timeout: 10000 })
+
+    await expect(page.getByRole('button', { name: /eliminar registros antiguos/i })).toBeVisible()
+  })
+
+  test('should display cleanup button in French', async ({ page }) => {
+    await setupApiMocks(page)
+    await page.goto('/fr/analytics')
+    await login(page)
+    await expect(page.getByText(/tableau de bord analytique/i)).toBeVisible({ timeout: 10000 })
+
+    await expect(page.getByRole('button', { name: /supprimer les anciens enregistrements/i })).toBeVisible()
+  })
+
+  test('should display cleanup button in German', async ({ page }) => {
+    await setupApiMocks(page)
+    await page.goto('/de/analytics')
+    await login(page)
+    await expect(page.getByText(/analyse-dashboard/i)).toBeVisible({ timeout: 10000 })
+
+    await expect(page.getByRole('button', { name: /alte einträge löschen/i })).toBeVisible()
   })
 })

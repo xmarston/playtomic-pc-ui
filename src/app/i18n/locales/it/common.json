@@ -49,5 +49,11 @@
     "analytics_from": "Da",
     "analytics_to": "A",
     "analytics_apply": "Applica",
-    "analytics_user_agents": "User Agent"
+    "analytics_user_agents": "User Agent",
+    "analytics_cleanup": "Pulizia",
+    "analytics_cleanup_button": "Elimina Vecchi Record",
+    "analytics_cleanup_confirm": "Eliminare tutti i record più vecchi di 3 mesi?",
+    "analytics_cleanup_success": "{{count}} record eliminati",
+    "analytics_cleanup_running": "Pulizia in corso...",
+    "analytics_cleanup_error": "Pulizia fallita"
 }

@@ -49,5 +49,11 @@
     "analytics_from": "De",
     "analytics_to": "Até",
     "analytics_apply": "Aplicar",
-    "analytics_user_agents": "Agentes de Utilizador"
+    "analytics_user_agents": "Agentes de Utilizador",
+    "analytics_cleanup": "Limpeza",
+    "analytics_cleanup_button": "Eliminar Registos Antigos",
+    "analytics_cleanup_confirm": "Eliminar todos os registos com mais de 3 meses?",
+    "analytics_cleanup_success": "{{count}} registos eliminados",
+    "analytics_cleanup_running": "A limpar...",
+    "analytics_cleanup_error": "Falha na limpeza"
 }

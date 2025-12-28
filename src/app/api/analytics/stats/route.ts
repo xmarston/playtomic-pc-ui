@@ -80,19 +80,19 @@ export async function GET(request: NextRequest) {
       uniqueSessions: uniqueSessions.length,
       todayViews,
       weekViews,
-      topPages: topPages.map((p) => ({
+      topPages: topPages.map((p: { path: string; _count: { path: number } }) => ({
         path: p.path,
         count: p._count.path,
       })),
-      topReferrers: topReferrers.map((r) => ({
+      topReferrers: topReferrers.map((r: { referrer: string | null; _count: { referrer: number } }) => ({
         referrer: r.referrer || 'Direct',
         count: r._count.referrer,
       })),
-      browsers: browsers.map((b) => ({
+      browsers: browsers.map((b: { browser: string | null; _count: { browser: number } }) => ({
         browser: b.browser || 'Unknown',
         count: b._count.browser,
       })),
-      userAgents: userAgents.map((ua) => ({
+      userAgents: userAgents.map((ua: { userAgent: string | null; _count: { userAgent: number } }) => ({
         userAgent: ua.userAgent || 'Unknown',
         count: ua._count.userAgent,
       })),

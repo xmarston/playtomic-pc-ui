@@ -2,7 +2,7 @@ services:
   ppc-ui:
     image: node:22-alpine
     working_dir: /app
-    command: sh -c "npm install && npm run dev"
+    command: sh -c "npm install && npx prisma generate && npm run dev"
     ports:
       - 3000:3000
     env_file:

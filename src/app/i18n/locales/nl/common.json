@@ -49,5 +49,11 @@
     "analytics_from": "Van",
     "analytics_to": "Tot",
     "analytics_apply": "Toepassen",
-    "analytics_user_agents": "User Agents"
+    "analytics_user_agents": "User Agents",
+    "analytics_cleanup": "Opruimen",
+    "analytics_cleanup_button": "Oude Records Verwijderen",
+    "analytics_cleanup_confirm": "Alle records ouder dan 3 maanden verwijderen?",
+    "analytics_cleanup_success": "{{count}} records verwijderd",
+    "analytics_cleanup_running": "Bezig met opruimen...",
+    "analytics_cleanup_error": "Opruimen mislukt"
 }

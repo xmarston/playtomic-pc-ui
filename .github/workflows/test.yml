@@ -30,6 +30,56 @@ jobs:
       - name: Run Playwright tests with coverage
         run: npm run test:coverage
 
+      - name: Display coverage summary
+        if: ${{ !cancelled() }}
+        run: |
+          if [ -f coverage/lcov.info ]; then
+            echo "## 📊 Code Coverage Summary"
+            echo ""
+            echo "| File | Lines | Covered | Coverage |"
+            echo "|------|-------|---------|----------|"
+
+            total_lines=0
+            total_covered=0
+
+            current_file=""
+            file_lines=0
+            file_covered=0
+
+            while IFS= read -r line; do
+              if [[ $line == SF:* ]]; then
+                if [ -n "$current_file" ] && [ $file_lines -gt 0 ]; then
+                  pct=$(awk "BEGIN {printf \"%.1f\", ($file_covered/$file_lines)*100}")
+                  echo "| $current_file | $file_lines | $file_covered | ${pct}% |"
+                fi
+                current_file="${line#SF:}"
+                current_file="${current_file#*src/}"
+                file_lines=0
+                file_covered=0
+              elif [[ $line == LF:* ]]; then
+                file_lines="${line#LF:}"
+                total_lines=$((total_lines + file_lines))
+              elif [[ $line == LH:* ]]; then
+                file_covered="${line#LH:}"
+                total_covered=$((total_covered + file_covered))
+              fi
+            done < coverage/lcov.info
+
+            # Print last file
+            if [ -n "$current_file" ] && [ $file_lines -gt 0 ]; then
+              pct=$(awk "BEGIN {printf \"%.1f\", ($file_covered/$file_lines)*100}")
+              echo "| $current_file | $file_lines | $file_covered | ${pct}% |"
+            fi
+
+            echo ""
+            if [ $total_lines -gt 0 ]; then
+              total_pct=$(awk "BEGIN {printf \"%.1f\", ($total_covered/$total_lines)*100}")
+              echo "**Total: ${total_covered}/${total_lines} lines (${total_pct}%)**"
+            fi
+          else
+            echo "No coverage data found"
+          fi
+
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}

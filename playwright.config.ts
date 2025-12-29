@@ -35,9 +35,10 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npm run dev',
+    // Use production build in CI for proper source maps and coverage
+    command: isCI ? 'npm run start' : 'npm run dev',
     url: 'http://localhost:3000',
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: !isCI,
     timeout: 120000,
   },
 })

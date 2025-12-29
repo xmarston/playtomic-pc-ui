@@ -40,37 +40,20 @@ jobs:
               const data = require('./coverage/report.json');
               const s = data.summary || {};
 
-              const tests = s.tests || { tests: 0, passed: 0, failed: 0, flaky: 0, skipped: 0 };
-              const total = tests.tests || 0;
+              const total = s.tests || 0;
               const pct = (n) => total > 0 ? ((n/total)*100).toFixed(1) : '0.0';
 
               console.log('| Metric | Value |');
               console.log('|--------|-------|');
               console.log('| **Tests** | ' + total + ' |');
-              console.log('| ├ Passed | ' + (tests.passed || 0) + ' (' + pct(tests.passed || 0) + '%) |');
-              console.log('| ├ Failed | ' + (tests.failed || 0) + ' (' + pct(tests.failed || 0) + '%) |');
-              console.log('| ├ Flaky | ' + (tests.flaky || 0) + ' (' + pct(tests.flaky || 0) + '%) |');
-              console.log('| └ Skipped | ' + (tests.skipped || 0) + ' (' + pct(tests.skipped || 0) + '%) |');
-              console.log('| **Suites** | ' + (s.suites || data.suites || 0) + ' |');
-              console.log('| **Duration** | ' + (data.durationH || s.durationH || 'N/A') + ' |');
-
-              const cov = s.coverage || data.coverage;
-              if (cov && cov.summary) {
-                const cs = cov.summary;
-                console.log('');
-                console.log('### Code Coverage');
-                console.log('| Metric | Covered | Total | % |');
-                console.log('|--------|---------|-------|---|');
-                if (cs.bytes) console.log('| Bytes | ' + cs.bytes.covered + ' | ' + cs.bytes.total + ' | ' + cs.bytes.pct + '% |');
-                if (cs.lines) console.log('| Lines | ' + cs.lines.covered + ' | ' + cs.lines.total + ' | ' + cs.lines.pct + '% |');
-                if (cs.functions) console.log('| Functions | ' + cs.functions.covered + ' | ' + cs.functions.total + ' | ' + cs.functions.pct + '% |');
-                if (cs.branches) console.log('| Branches | ' + cs.branches.covered + ' | ' + cs.branches.total + ' | ' + cs.branches.pct + '% |');
-              }
-
-              // Debug: show top-level keys
-              console.log('');
-              console.log('Debug: Top-level keys:', Object.keys(data).join(', '));
-              console.log('Debug: Summary keys:', Object.keys(s).join(', '));
+              console.log('| ├ Passed | ' + (s.passed || 0) + ' (' + pct(s.passed || 0) + '%) |');
+              console.log('| ├ Failed | ' + (s.failed || 0) + ' (' + pct(s.failed || 0) + '%) |');
+              console.log('| ├ Flaky | ' + (s.flaky || 0) + ' (' + pct(s.flaky || 0) + '%) |');
+              console.log('| └ Skipped | ' + (s.skipped || 0) + ' (' + pct(s.skipped || 0) + '%) |');
+              console.log('| **Suites** | ' + (s.suites?.suites || s.files || 0) + ' |');
+              console.log('| **Steps** | ' + (s.steps || 0) + ' |');
+              console.log('| **Duration** | ' + (data.durationH || 'N/A') + ' |');
+              console.log('| **Playwright** | v' + (data.metadata?.playwright?.version || 'N/A') + ' |');
             "
           else
             echo "No coverage data found"

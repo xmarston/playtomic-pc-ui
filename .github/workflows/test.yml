@@ -33,93 +33,97 @@ jobs:
       - name: Run Playwright tests with coverage
         run: npm run test:coverage
 
-      - name: Display coverage summary
+      - name: Generate coverage summary
         if: ${{ !cancelled() }}
         run: |
-          echo "## 📊 Test Results"
-          echo ""
-          if [ -f coverage/report.json ]; then
-            node -e "
-              const data = require('./coverage/report.json');
-              const s = data.summary || {};
-              const getVal = (v) => typeof v === 'object' ? (v.tests || v.value || 0) : (v || 0);
-              const total = getVal(s.tests);
-              const passed = getVal(s.passed);
-              const failed = getVal(s.failed);
-              const pct = (n) => total > 0 ? ((n/total)*100).toFixed(1) : '0.0';
-              console.log('| Metric | Value |');
-              console.log('|--------|-------|');
-              console.log('| **Tests** | ' + total + ' |');
-              console.log('| ├ Passed | ' + passed + ' (' + pct(passed) + '%) |');
-              console.log('| ├ Failed | ' + failed + ' (' + pct(failed) + '%) |');
-              console.log('| **Duration** | ' + (data.durationH || 'N/A') + ' |');
-            "
-          fi
-          echo ""
-          echo "## 📁 Per-File Code Coverage"
-          echo ""
-          if [ -f coverage/lcov.info ]; then
-            echo "| File | Lines | Covered | Coverage |"
-            echo "|------|-------|---------|----------|"
-            node -e "
-              const fs = require('fs');
-              const lcov = fs.readFileSync('./coverage/lcov.info', 'utf8');
-              const files = new Map();
-              let current = { file: '', lines: 0, covered: 0 };
-
-              lcov.split('\n').forEach(line => {
-                if (line.startsWith('SF:')) {
-                  if (current.file && current.lines > 0) {
-                    // Merge duplicate files (different versions)
-                    const baseFile = current.file.replace(/-v=\\d+/, '');
-                    if (files.has(baseFile)) {
-                      const existing = files.get(baseFile);
-                      existing.lines = Math.max(existing.lines, current.lines);
-                      existing.covered = Math.max(existing.covered, current.covered);
-                    } else {
-                      files.set(baseFile, {...current, file: baseFile});
-                    }
-                  }
-                  // Clean up file paths for readability
-                  let file = line.slice(3);
-                  file = file.replace('localhost-3000/_next/static/chunks/', '');
-                  file = file.replace(/_app-pages-browser_src_app_i18n_locales_/g, 'locales/');
-                  file = file.replace(/_common_json\\.js$/, '.json');
-                  file = file.replace(/\\.js$/, '');
-                  current = { file, lines: 0, covered: 0 };
-                } else if (line.startsWith('LF:')) {
-                  current.lines = parseInt(line.slice(3));
-                } else if (line.startsWith('LH:')) {
-                  current.covered = parseInt(line.slice(3));
-                }
-              });
-              if (current.file && current.lines > 0) {
-                const baseFile = current.file.replace(/-v=\\d+/, '');
-                if (!files.has(baseFile)) files.set(baseFile, {...current, file: baseFile});
-              }
-
-              let totalLines = 0, totalCovered = 0;
-              // Sort by file name and filter out runtime files
-              const sortedFiles = [...files.values()]
-                .filter(f => !f.file.includes('main-app') && !f.file.includes('app-pages-internals'))
-                .sort((a, b) => a.file.localeCompare(b.file));
-
-              sortedFiles.forEach(f => {
-                const pct = f.lines > 0 ? ((f.covered/f.lines)*100).toFixed(1) : '0.0';
-                console.log('| ' + f.file + ' | ' + f.lines + ' | ' + f.covered + ' | ' + pct + '% |');
-                totalLines += f.lines;
-                totalCovered += f.covered;
-              });
-
-              const totalPct = totalLines > 0 ? ((totalCovered/totalLines)*100).toFixed(1) : '0.0';
-              console.log('| **Total** | **' + totalLines + '** | **' + totalCovered + '** | **' + totalPct + '%** |');
-            "
-          else
-            echo "No per-file coverage data found (lcov.info missing)"
+          {
+            echo "## 📊 Test Results"
             echo ""
-            echo "Coverage files in directory:"
-            ls -la coverage/ 2>/dev/null || echo "No coverage directory"
-          fi
+            if [ -f coverage/report.json ]; then
+              node -e "
+                const data = require('./coverage/report.json');
+                const s = data.summary || {};
+                const getVal = (v) => typeof v === 'object' ? (v.tests || v.value || 0) : (v || 0);
+                const total = getVal(s.tests);
+                const passed = getVal(s.passed);
+                const failed = getVal(s.failed);
+                const pct = (n) => total > 0 ? ((n/total)*100).toFixed(1) : '0.0';
+                console.log('| Metric | Value |');
+                console.log('|--------|-------|');
+                console.log('| **Tests** | ' + total + ' |');
+                console.log('| ├ Passed | ' + passed + ' (' + pct(passed) + '%) |');
+                console.log('| ├ Failed | ' + failed + ' (' + pct(failed) + '%) |');
+                console.log('| **Duration** | ' + (data.durationH || 'N/A') + ' |');
+              "
+            fi
+            echo ""
+            echo "## 📁 Per-File Code Coverage"
+            echo ""
+            if [ -f coverage/lcov.info ]; then
+              echo "| File | Lines | Covered | Coverage |"
+              echo "|------|-------|---------|----------|"
+              node -e "
+                const fs = require('fs');
+                const lcov = fs.readFileSync('./coverage/lcov.info', 'utf8');
+                const files = new Map();
+                let current = { file: '', lines: 0, covered: 0 };
+
+                lcov.split('\n').forEach(line => {
+                  if (line.startsWith('SF:')) {
+                    if (current.file && current.lines > 0) {
+                      const baseFile = current.file.replace(/-v=\\d+/, '');
+                      if (files.has(baseFile)) {
+                        const existing = files.get(baseFile);
+                        existing.lines = Math.max(existing.lines, current.lines);
+                        existing.covered = Math.max(existing.covered, current.covered);
+                      } else {
+                        files.set(baseFile, {...current, file: baseFile});
+                      }
+                    }
+                    let file = line.slice(3);
+                    file = file.replace('localhost-3000/_next/static/chunks/', '');
+                    file = file.replace(/_app-pages-browser_src_app_i18n_locales_/g, 'locales/');
+                    file = file.replace(/_common_json\\.js$/, '.json');
+                    file = file.replace(/\\.js$/, '');
+                    current = { file, lines: 0, covered: 0 };
+                  } else if (line.startsWith('LF:')) {
+                    current.lines = parseInt(line.slice(3));
+                  } else if (line.startsWith('LH:')) {
+                    current.covered = parseInt(line.slice(3));
+                  }
+                });
+                if (current.file && current.lines > 0) {
+                  const baseFile = current.file.replace(/-v=\\d+/, '');
+                  if (!files.has(baseFile)) files.set(baseFile, {...current, file: baseFile});
+                }
+
+                let totalLines = 0, totalCovered = 0;
+                const sortedFiles = [...files.values()]
+                  .filter(f => !f.file.includes('main-app') && !f.file.includes('app-pages-internals') && !f.file.startsWith('localhost-3000/'))
+                  .sort((a, b) => a.file.localeCompare(b.file));
+
+                sortedFiles.forEach(f => {
+                  const pct = f.lines > 0 ? ((f.covered/f.lines)*100).toFixed(1) : '0.0';
+                  console.log('| ' + f.file + ' | ' + f.lines + ' | ' + f.covered + ' | ' + pct + '% |');
+                  totalLines += f.lines;
+                  totalCovered += f.covered;
+                });
+
+                const totalPct = totalLines > 0 ? ((totalCovered/totalLines)*100).toFixed(1) : '0.0';
+                console.log('| **Total** | **' + totalLines + '** | **' + totalCovered + '** | **' + totalPct + '%** |');
+              "
+            else
+              echo "No coverage data available"
+            fi
+          } > coverage-summary.md
+          cat coverage-summary.md
+
+      - name: Comment coverage on PR
+        if: github.event_name == 'pull_request' && !cancelled()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh pr comment ${{ github.event.pull_request.number }} --body-file coverage-summary.md
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v4

@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from './fixtures'
 
 test.describe('i18n translations', () => {
   test('should display content in English when visiting /en', async ({ page }) => {

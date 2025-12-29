@@ -17,8 +17,11 @@ export default defineConfig({
           coverage: {
             entryFilter: (entry: { url: string }) => entry.url.includes('localhost:3000'),
             sourceFilter: (sourcePath: string) => sourcePath.includes('src/'),
-            reports: ['v8', 'html', 'lcovonly'],
-            lcov: true,
+            reports: [
+              ['v8'],
+              ['console-summary'],
+              ['lcov'],
+            ],
             outputDir: './coverage',
           },
         }],
@@ -35,9 +38,10 @@ export default defineConfig({
     },
   ],
   webServer: {
+    // Use dev server for coverage collection (V8 coverage works better with dev mode)
     command: 'npm run dev',
     url: 'http://localhost:3000',
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: !isCI,
     timeout: 120000,
   },
 })

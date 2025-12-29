@@ -1,10 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  webpack: (config, { dev }) => {
-    if (dev) {
-      // Use source-map instead of eval-based source maps for Docker compatibility
-      config.devtool = 'source-map'
-    }
+  // Enable source maps in production for code coverage
+  productionBrowserSourceMaps: true,
+  webpack: (config) => {
+    // Use source-map for all builds (dev and prod) for coverage and Docker compatibility
+    config.devtool = 'source-map'
     return config
   },
 };

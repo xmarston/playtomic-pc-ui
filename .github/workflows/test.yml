@@ -33,49 +33,34 @@ jobs:
       - name: Display coverage summary
         if: ${{ !cancelled() }}
         run: |
-          if [ -f coverage/lcov.info ]; then
+          if [ -f coverage/report.json ]; then
             echo "## 📊 Code Coverage Summary"
             echo ""
-            echo "| File | Lines | Covered | Coverage |"
-            echo "|------|-------|---------|----------|"
+            node -e "
+              const data = require('./coverage/report.json');
+              const summary = data.summary || {};
 
-            total_lines=0
-            total_covered=0
+              console.log('| Metric | Value |');
+              console.log('|--------|-------|');
+              console.log('| **Tests** | ' + (data.tests || 0) + ' |');
+              console.log('| ├ Passed | ' + (data.passed || 0) + ' (' + ((data.passed/data.tests)*100).toFixed(1) + '%) |');
+              console.log('| ├ Failed | ' + (data.failed || 0) + ' (' + ((data.failed/data.tests)*100).toFixed(1) + '%) |');
+              console.log('| ├ Flaky | ' + (data.flaky || 0) + ' (' + ((data.flaky/data.tests)*100).toFixed(1) + '%) |');
+              console.log('| └ Skipped | ' + (data.skipped || 0) + ' (' + ((data.skipped/data.tests)*100).toFixed(1) + '%) |');
+              console.log('| **Suites** | ' + (data.suites || 0) + ' |');
+              console.log('| **Duration** | ' + (data.durationH || 'N/A') + ' |');
 
-            current_file=""
-            file_lines=0
-            file_covered=0
-
-            while IFS= read -r line; do
-              if [[ $line == SF:* ]]; then
-                if [ -n "$current_file" ] && [ $file_lines -gt 0 ]; then
-                  pct=$(awk "BEGIN {printf \"%.1f\", ($file_covered/$file_lines)*100}")
-                  echo "| $current_file | $file_lines | $file_covered | ${pct}% |"
-                fi
-                current_file="${line#SF:}"
-                current_file="${current_file#*src/}"
-                file_lines=0
-                file_covered=0
-              elif [[ $line == LF:* ]]; then
-                file_lines="${line#LF:}"
-                total_lines=$((total_lines + file_lines))
-              elif [[ $line == LH:* ]]; then
-                file_covered="${line#LH:}"
-                total_covered=$((total_covered + file_covered))
-              fi
-            done < coverage/lcov.info
-
-            # Print last file
-            if [ -n "$current_file" ] && [ $file_lines -gt 0 ]; then
-              pct=$(awk "BEGIN {printf \"%.1f\", ($file_covered/$file_lines)*100}")
-              echo "| $current_file | $file_lines | $file_covered | ${pct}% |"
-            fi
-
-            echo ""
-            if [ $total_lines -gt 0 ]; then
-              total_pct=$(awk "BEGIN {printf \"%.1f\", ($total_covered/$total_lines)*100}")
-              echo "**Total: ${total_covered}/${total_lines} lines (${total_pct}%)**"
-            fi
+              if (summary.bytes) {
+                console.log('');
+                console.log('### Code Coverage');
+                console.log('| Metric | Covered | Total | % |');
+                console.log('|--------|---------|-------|---|');
+                if (summary.bytes) console.log('| Bytes | ' + summary.bytes.covered + ' | ' + summary.bytes.total + ' | ' + summary.bytes.pct + '% |');
+                if (summary.lines) console.log('| Lines | ' + summary.lines.covered + ' | ' + summary.lines.total + ' | ' + summary.lines.pct + '% |');
+                if (summary.functions) console.log('| Functions | ' + summary.functions.covered + ' | ' + summary.functions.total + ' | ' + summary.functions.pct + '% |');
+                if (summary.branches) console.log('| Branches | ' + summary.branches.covered + ' | ' + summary.branches.total + ' | ' + summary.branches.pct + '% |');
+              }
+            "
           else
             echo "No coverage data found"
           fi

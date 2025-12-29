@@ -64,23 +64,47 @@ jobs:
             node -e "
               const fs = require('fs');
               const lcov = fs.readFileSync('./coverage/lcov.info', 'utf8');
-              const files = [];
+              const files = new Map();
               let current = { file: '', lines: 0, covered: 0 };
 
               lcov.split('\n').forEach(line => {
                 if (line.startsWith('SF:')) {
-                  if (current.file && current.lines > 0) files.push({...current});
-                  current = { file: line.slice(3).replace(/.*src\//, 'src/'), lines: 0, covered: 0 };
+                  if (current.file && current.lines > 0) {
+                    // Merge duplicate files (different versions)
+                    const baseFile = current.file.replace(/-v=\\d+/, '');
+                    if (files.has(baseFile)) {
+                      const existing = files.get(baseFile);
+                      existing.lines = Math.max(existing.lines, current.lines);
+                      existing.covered = Math.max(existing.covered, current.covered);
+                    } else {
+                      files.set(baseFile, {...current, file: baseFile});
+                    }
+                  }
+                  // Clean up file paths for readability
+                  let file = line.slice(3);
+                  file = file.replace('localhost-3000/_next/static/chunks/', '');
+                  file = file.replace(/_app-pages-browser_src_app_i18n_locales_/g, 'locales/');
+                  file = file.replace(/_common_json\\.js$/, '.json');
+                  file = file.replace(/\\.js$/, '');
+                  current = { file, lines: 0, covered: 0 };
                 } else if (line.startsWith('LF:')) {
                   current.lines = parseInt(line.slice(3));
                 } else if (line.startsWith('LH:')) {
                   current.covered = parseInt(line.slice(3));
                 }
               });
-              if (current.file && current.lines > 0) files.push(current);
+              if (current.file && current.lines > 0) {
+                const baseFile = current.file.replace(/-v=\\d+/, '');
+                if (!files.has(baseFile)) files.set(baseFile, {...current, file: baseFile});
+              }
 
               let totalLines = 0, totalCovered = 0;
-              files.forEach(f => {
+              // Sort by file name and filter out runtime files
+              const sortedFiles = [...files.values()]
+                .filter(f => !f.file.includes('main-app') && !f.file.includes('app-pages-internals'))
+                .sort((a, b) => a.file.localeCompare(b.file));
+
+              sortedFiles.forEach(f => {
                 const pct = f.lines > 0 ? ((f.covered/f.lines)*100).toFixed(1) : '0.0';
                 console.log('| ' + f.file + ' | ' + f.lines + ' | ' + f.covered + ' | ' + pct + '% |');
                 totalLines += f.lines;

@@ -1,30 +1,34 @@
 import { test as base, expect } from '@playwright/test'
+import { addCoverageReport } from 'monocart-reporter'
 
-// Extend the base test with coverage collection
-export const test = base.extend({
-  page: async ({ page }, use, testInfo) => {
-    // Start JS coverage collection
-    if (process.env.COVERAGE) {
-      await page.coverage.startJSCoverage({ resetOnNavigation: false })
-    }
+// Extend the base test with coverage collection using automatic fixtures
+export const test = base.extend<{ autoTestFixture: string }>({
+  autoTestFixture: [
+    async ({ page }, use, testInfo) => {
+      // Coverage API is chromium only
+      const isChromium = testInfo.project.name === 'chromium'
 
-    await use(page)
+      // Start coverage collection
+      if (process.env.COVERAGE && isChromium) {
+        await page.coverage.startJSCoverage({
+          resetOnNavigation: false,
+        })
+      }
 
-    // Stop and attach coverage data for monocart to pick up
-    if (process.env.COVERAGE) {
-      const coverage = await page.coverage.stopJSCoverage()
-      // Filter to only include source files from localhost:3000
-      // This prevents OOM from massive node_modules coverage
-      const filteredCoverage = coverage.filter(
-        (entry) => entry.url.includes('localhost:3000') && !entry.url.includes('node_modules')
-      )
-      // Attach coverage data as JSON for monocart-reporter
-      await testInfo.attach('coverage', {
-        body: JSON.stringify(filteredCoverage),
-        contentType: 'application/json',
-      })
-    }
-  },
+      await use('autoTestFixture')
+
+      // Stop and add coverage to monocart global report
+      if (process.env.COVERAGE && isChromium) {
+        const jsCoverage = await page.coverage.stopJSCoverage()
+        // Use monocart's addCoverageReport API
+        await addCoverageReport(jsCoverage, testInfo)
+      }
+    },
+    {
+      scope: 'test',
+      auto: true,
+    },
+  ],
 })
 
 export { expect }

@@ -35,8 +35,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    // Use production build in CI for proper source maps and coverage
-    command: isCI ? 'npm run start' : 'npm run dev',
+    // Use dev server for coverage collection (V8 coverage works better with dev mode)
+    command: 'npm run dev',
     url: 'http://localhost:3000',
     reuseExistingServer: !isCI,
     timeout: 120000,

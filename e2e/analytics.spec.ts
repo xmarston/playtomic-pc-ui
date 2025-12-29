@@ -323,6 +323,67 @@ test.describe('Analytics Dashboard - Session Persistence', () => {
     // Should still be logged in (dashboard visible, not login form)
     await expect(page.getByText(/analytics dashboard/i)).toBeVisible({ timeout: 10000 })
   })
+
+  test('should persist date range selection across page refresh', async ({ page }) => {
+    await setupApiMocks(page)
+    await page.goto('/en/analytics')
+    await login(page)
+
+    // Wait for dashboard to load
+    await expect(page.getByText(/analytics dashboard/i)).toBeVisible({ timeout: 10000 })
+
+    // Select 7 days preset
+    const sevenDaysButton = page.getByRole('button', { name: /last 7 days/i }).first()
+    await sevenDaysButton.click()
+    await expect(sevenDaysButton).toHaveClass(/bg-blue-500/)
+
+    // Refresh the page
+    await page.reload()
+
+    // Wait for dashboard to reload
+    await expect(page.getByText(/analytics dashboard/i)).toBeVisible({ timeout: 10000 })
+
+    // 7 days should still be selected
+    const sevenDaysButtonAfterRefresh = page.getByRole('button', { name: /last 7 days/i }).first()
+    await expect(sevenDaysButtonAfterRefresh).toHaveClass(/bg-blue-500/)
+  })
+
+  test('should persist custom date range across page refresh', async ({ page }) => {
+    await setupApiMocks(page)
+    await page.goto('/en/analytics')
+    await login(page)
+
+    // Wait for dashboard to load
+    await expect(page.getByText(/analytics dashboard/i)).toBeVisible({ timeout: 10000 })
+
+    // Select custom preset
+    const customButton = page.getByRole('button', { name: /custom/i })
+    await customButton.click()
+
+    // Enter custom dates
+    const dateInputs = page.locator('input[type="date"]')
+    await dateInputs.first().fill('2024-01-01')
+    await dateInputs.nth(1).fill('2024-01-31')
+
+    // Apply the custom range
+    await page.getByRole('button', { name: /apply/i }).click()
+
+    // Refresh the page
+    await page.reload()
+
+    // Wait for dashboard to reload
+    await expect(page.getByText(/analytics dashboard/i)).toBeVisible({ timeout: 10000 })
+
+    // Custom should still be selected and date inputs visible
+    const customButtonAfterRefresh = page.getByRole('button', { name: /custom/i })
+    await expect(customButtonAfterRefresh).toHaveClass(/bg-blue-500/)
+
+    // Date inputs should be visible with the saved values
+    const dateInputsAfterRefresh = page.locator('input[type="date"]')
+    await expect(dateInputsAfterRefresh).toHaveCount(2)
+    await expect(dateInputsAfterRefresh.first()).toHaveValue('2024-01-01')
+    await expect(dateInputsAfterRefresh.nth(1)).toHaveValue('2024-01-31')
+  })
 })
 
 test.describe('Analytics Dashboard - Translations', () => {

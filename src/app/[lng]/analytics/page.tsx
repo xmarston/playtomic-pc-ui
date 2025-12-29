@@ -75,11 +75,63 @@ export default function AnalyticsDashboard() {
   const [cleanupLoading, setCleanupLoading] = useState(false)
   const [cleanupResult, setCleanupResult] = useState<{ success: boolean; count: number } | null>(null)
 
-  // Date range state
-  const [datePreset, setDatePreset] = useState<DatePreset>('30days')
-  const [startDate, setStartDate] = useState(() => getDateRange('30days').startDate)
-  const [endDate, setEndDate] = useState(() => getDateRange('30days').endDate)
-  const [showCustom, setShowCustom] = useState(false)
+  // Date range state - load from sessionStorage if available
+  const [datePreset, setDatePreset] = useState<DatePreset>(() => {
+    if (typeof window !== 'undefined') {
+      const stored = sessionStorage.getItem('analytics_date_range')
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored)
+          return parsed.preset || '30days'
+        } catch {
+          return '30days'
+        }
+      }
+    }
+    return '30days'
+  })
+  const [startDate, setStartDate] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const stored = sessionStorage.getItem('analytics_date_range')
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored)
+          return parsed.startDate || getDateRange('30days').startDate
+        } catch {
+          return getDateRange('30days').startDate
+        }
+      }
+    }
+    return getDateRange('30days').startDate
+  })
+  const [endDate, setEndDate] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const stored = sessionStorage.getItem('analytics_date_range')
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored)
+          return parsed.endDate || getDateRange('30days').endDate
+        } catch {
+          return getDateRange('30days').endDate
+        }
+      }
+    }
+    return getDateRange('30days').endDate
+  })
+  const [showCustom, setShowCustom] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const stored = sessionStorage.getItem('analytics_date_range')
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored)
+          return parsed.showCustom || false
+        } catch {
+          return false
+        }
+      }
+    }
+    return false
+  })
 
   // Load credentials from sessionStorage on mount
   useEffect(() => {
@@ -93,6 +145,16 @@ export default function AnalyticsDashboard() {
     }
     setCheckingAuth(false)
   }, [])
+
+  // Save date range to sessionStorage when it changes
+  useEffect(() => {
+    sessionStorage.setItem('analytics_date_range', JSON.stringify({
+      preset: datePreset,
+      startDate,
+      endDate,
+      showCustom,
+    }))
+  }, [datePreset, startDate, endDate, showCustom])
 
   // Save credentials to sessionStorage when they change
   const handleLogin = (creds: { user: string; pass: string }) => {

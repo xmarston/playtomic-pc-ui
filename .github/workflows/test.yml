@@ -30,6 +30,45 @@ jobs:
       - name: Run Playwright tests with coverage
         run: npm run test:coverage
 
+      - name: Display coverage summary
+        if: ${{ !cancelled() }}
+        run: |
+          if [ -f coverage/report.json ]; then
+            echo "## 📊 Code Coverage Summary"
+            echo ""
+            node -e "
+              const data = require('./coverage/report.json');
+              const s = data.summary || {};
+
+              // Extract values - they might be objects with a 'tests' property or direct numbers
+              const getVal = (v) => typeof v === 'object' ? (v.tests || v.value || 0) : (v || 0);
+
+              const total = getVal(s.tests);
+              const passed = getVal(s.passed);
+              const failed = getVal(s.failed);
+              const flaky = getVal(s.flaky);
+              const skipped = getVal(s.skipped);
+              const steps = getVal(s.steps);
+              const suites = typeof s.suites === 'object' ? (s.suites.suites || s.suites.value || 0) : (s.suites || 0);
+
+              const pct = (n) => total > 0 ? ((n/total)*100).toFixed(1) : '0.0';
+
+              console.log('| Metric | Value |');
+              console.log('|--------|-------|');
+              console.log('| **Tests** | ' + total + ' |');
+              console.log('| ├ Passed | ' + passed + ' (' + pct(passed) + '%) |');
+              console.log('| ├ Failed | ' + failed + ' (' + pct(failed) + '%) |');
+              console.log('| ├ Flaky | ' + flaky + ' (' + pct(flaky) + '%) |');
+              console.log('| └ Skipped | ' + skipped + ' (' + pct(skipped) + '%) |');
+              console.log('| **Suites** | ' + suites + ' |');
+              console.log('| **Steps** | ' + steps + ' |');
+              console.log('| **Duration** | ' + (data.durationH || 'N/A') + ' |');
+              console.log('| **Playwright** | v' + (data.metadata?.playwright?.version || 'N/A') + ' |');
+            "
+          else
+            echo "No coverage data found"
+          fi
+
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}

@@ -13,9 +13,14 @@ export const test = base.extend({
     // Stop and attach coverage data for monocart to pick up
     if (process.env.COVERAGE) {
       const coverage = await page.coverage.stopJSCoverage()
+      // Filter to only include source files from localhost:3000
+      // This prevents OOM from massive node_modules coverage
+      const filteredCoverage = coverage.filter(
+        (entry) => entry.url.includes('localhost:3000') && !entry.url.includes('node_modules')
+      )
       // Attach coverage data as JSON for monocart-reporter
       await testInfo.attach('coverage', {
-        body: JSON.stringify(coverage),
+        body: JSON.stringify(filteredCoverage),
         contentType: 'application/json',
       })
     }

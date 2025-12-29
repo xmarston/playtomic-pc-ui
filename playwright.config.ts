@@ -15,8 +15,6 @@ export default defineConfig({
           name: 'Playwright Coverage Report',
           outputFile: './coverage/report.html',
           coverage: {
-            // Auto start/stop coverage for each page
-            autoStart: true,
             entryFilter: (entry: { url: string }) => entry.url.includes('localhost:3000'),
             sourceFilter: (sourcePath: string) => sourcePath.includes('src/'),
             reports: [

@@ -17,8 +17,11 @@ export default defineConfig({
           coverage: {
             entryFilter: (entry: { url: string }) => entry.url.includes('localhost:3000'),
             sourceFilter: (sourcePath: string) => sourcePath.includes('src/'),
-            reports: ['v8', 'html', 'lcovonly'],
-            lcov: true,
+            reports: [
+              ['v8'],
+              ['console-summary'],
+              ['lcov', { outputFile: './coverage/lcov.info' }],
+            ],
             outputDir: './coverage',
           },
         }],
